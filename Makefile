@@ -8,11 +8,11 @@ TESTS     = $(TEST_MODS:.ml=.byte)
 
 OFLAGS = -I src -tag debug -no-links -ocamlrun 'ocamlrun -b'
 
-.PHONY: all test clean $(MAIN) $(IFS) $(TESTS)
+.PHONY: all test clean $(IFS) $(MAIN) $(TESTS)
 
-all: $(MAIN) $(IFS)
+all: $(IFS) $(MAIN)
 
-$(MAIN) $(IFS):
+$(IFS) $(MAIN):
 	@ocamlbuild $(OFLAGS) $@
 
 test: $(TESTS)
