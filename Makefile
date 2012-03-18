@@ -1,4 +1,5 @@
 #MAIN = main.byte
+#MAIN = main.native
 MODS  = $(wildcard src/*.ml)
 IFS   = $(MODS:.ml=.inferred.mli)
 
