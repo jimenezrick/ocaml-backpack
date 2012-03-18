@@ -1,10 +1,10 @@
 (*
  * My personal OCaml backpack
  *
- * I never leave home without it
+ * I never leave home without it!
  *)
 
-let ( & ) f x = f x
+let ( $ ) f x = f x
 
 module StringMap = Map.Make (String)
 
