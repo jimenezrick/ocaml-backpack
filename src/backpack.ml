@@ -4,7 +4,7 @@
  * I never leave home without it
  *)
 
-let ( & ) a b = a b
+let ( & ) f x = f x
 
 module StringMap = Map.Make (String)
 
