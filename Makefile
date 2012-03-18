@@ -1,17 +1,17 @@
-#MAIN=main.byte
-MODS=$(wildcard src/*.ml)
-IFS=$(MODS:.ml=.inferred.mli)
+#MAIN = main.byte
+MODS  = $(wildcard src/*.ml)
+IFS   = $(MODS:.ml=.inferred.mli)
 
-TEST_MODS=$(wildcard test/*.ml)
-TESTS=$(TEST_MODS:.ml=.byte)
+TEST_MODS = $(wildcard test/*.ml)
+TESTS     = $(TEST_MODS:.ml=.byte)
 
-OFLAGS=-I src -tag debug -no-links -ocamlrun 'ocamlrun -b'
+OFLAGS = -I src -tag debug -no-links -ocamlrun 'ocamlrun -b'
 
-.PHONY: all test clean $(IFS) $(MAIN) $(TESTS)
+.PHONY: all test clean $(MAIN) $(IFS) $(TESTS)
 
-all: $(IFS) $(MAIN)
+all: $(MAIN) $(IFS)
 
-$(IFS) $(MAIN):
+$(MAIN) $(IFS):
 	@ocamlbuild $(OFLAGS) $@
 
 test: $(TESTS)
