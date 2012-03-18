@@ -6,7 +6,7 @@ IFS   = $(MODS:.ml=.inferred.mli)
 TEST_MODS = $(wildcard test/*.ml)
 TESTS     = $(TEST_MODS:.ml=.byte)
 
-OFLAGS = -I src -tag debug -no-links -ocamlrun 'ocamlrun -b'
+OFLAGS = -I src -tag debug -ocamlrun 'ocamlrun -b'
 
 .PHONY: all test clean $(IFS) $(MAIN) $(TESTS)
 
@@ -18,7 +18,7 @@ $(IFS) $(MAIN):
 test: $(TESTS)
 
 $(TESTS):
-	@ocamlbuild $(OFLAGS) $@ --
+	@ocamlbuild $(OFLAGS) -no-links $@ --
 
 clean:
 	@ocamlbuild $(OFLAGS) -clean
