@@ -1,4 +1,4 @@
-open Backpack
+open Backpack.Op
 
 let () =
     let f a b = a * b in

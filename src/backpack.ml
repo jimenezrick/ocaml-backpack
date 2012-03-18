@@ -4,8 +4,6 @@
  * I never leave home without it!
  *)
 
-let ( $ ) f x = f x
-
 module StringMap = Map.Make (String)
 
 module IntMap = Map.Make (struct type t = int let compare = compare end)
@@ -81,13 +79,11 @@ module LazyList =
             | Cons of 'a * 'a t
         and 'a t = 'a node Lazy.t
 
-        let empty = lazy Nil
-
-        let create x = lazy (Cons (x, lazy Nil))
-
-        let cons h t = lazy (Cons (h, t))
-
         let force = Lazy.force
+
+        let nil = Lazy.lazy_from_val Nil
+
+        let cons h t = Lazy.lazy_from_val (Cons (h, t))
 
         let rec map f l =
             lazy (
