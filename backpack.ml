@@ -4,6 +4,8 @@
  * I never leave home without it
  *)
 
+let ( & ) a b = a b
+
 module StringMap = Map.Make (String)
 
 module IntMap = Map.Make (struct type t = int let compare = compare end)
