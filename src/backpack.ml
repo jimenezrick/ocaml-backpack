@@ -33,7 +33,7 @@ module Op =
         let ( $ ) f x = f x
 
         (* Reverse function application operator *)
-        let ( |> ) x f = f x
+        let ( |< ) x f = f x
     end
 
 module Str =
@@ -156,7 +156,7 @@ module LazyList =
 
         let rec append l1 l2 =
             match force l1 with
-            | Nil         -> nil
+            | Nil         -> l2
             | Cons (h, t) -> cons h (append t l2)
 
         let rec concat ll =
@@ -166,11 +166,12 @@ module LazyList =
 
         let to_list l = fold_right (fun h acc -> h :: acc) [] l
 
-        let rec from f = lazy (
-            match f () with
-            | None   -> Nil
-            | Some x -> Cons (x, from f)
-        )
+        let from f =
+            let rec next n =
+                match f n with
+                | None   -> Nil
+                | Some x -> Cons (x, lazy (next (n + 1)))
+            in lazy (next 0)
 
         let rec of_list l = lazy (
             match l with
