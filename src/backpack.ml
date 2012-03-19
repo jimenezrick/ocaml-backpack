@@ -51,27 +51,6 @@ module Str =
             in implode' 0 l
     end
 
-module InfiniteList =
-    struct
-        type 'a t =
-            | Nil
-            | Cons of 'a * (unit -> 'a t)
-
-        let head = function
-            | Nil         -> None
-            | Cons (x, _) -> Some x
-
-        let tail = function
-            | Nil         -> None
-            | Cons (_, f) -> Some (f ())
-
-        let rec range n0 inc = Cons (n0, fun () -> range (n0 + inc) inc)
-
-        let range0 inc = range 0 inc
-
-        let range_naturals = range0 1
-    end
-
 module LazyList =
     struct
         type 'a node =
