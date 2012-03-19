@@ -1,5 +1,19 @@
+open Backpack.OptionMonad
 open Backpack.Op
+open Backpack.Str
 open Backpack.LazyList
+
+(* OptionMonad *)
+
+let () =
+    let good x = Some x in
+    let bad _  = None in
+    begin
+        assert (good 6 >>= good >>= good = Some 6);
+        assert (good 6 >>= bad >>= good = None);
+        assert (good 6 >>= good >> return 3 = Some 3);
+        assert (good 6 >>= bad >> return 3 = None)
+    end
 
 (* Op *)
 
@@ -12,6 +26,14 @@ let () =
         assert ((f |. g) 8 = 11);
         assert (f' 2 $ g' 3 = 8);
         assert (1 |< f = 2)
+    end
+
+(* Str *)
+
+let () =
+    begin
+        assert (explode "abc" = ['a'; 'b'; 'c']);
+        assert (implode ['a'; 'b'; 'c'] = "abc")
     end
 
 (* LazyList *)
