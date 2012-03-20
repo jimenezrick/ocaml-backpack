@@ -36,6 +36,17 @@ module Op =
         let ( |< ) x f = f x
     end
 
+module Char =
+    struct
+        let is_blank c = c = ' ' || c = '\t'
+
+        let is_num c = c >= '0' && c <= '9'
+
+        let is_alpha c = c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
+
+        let is_alphanum c = is_alpha c || is_num c
+    end
+
 module Str =
     struct
         let explode s =
