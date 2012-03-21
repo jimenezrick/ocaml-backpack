@@ -7,8 +7,8 @@ I never leave home without it!
  What this library offers
 --------------------------
 
-Small OCaml library that includes:
+Small OCaml module that extends the standard library with:
 
-- Handy functions not present in standard library
-- Some new data structures: lazy lists
-- More functions from the UNIX API
+- Handy miscellaneous functions
+- New data structures: lazy lists
+- More functions from UNIX
