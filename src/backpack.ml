@@ -1,8 +1,4 @@
-(*
- * My personal OCaml backpack
- *
- * I never leave home without it!
- *)
+module Unix = BackpackUnix
 
 module StringMap = Map.Make (String)
 

@@ -1,7 +1,21 @@
+open Backpack.Unix
 open Backpack.OptionMonad
 open Backpack.Op
 open Backpack.Str
 open Backpack.LazyList
+
+
+(* Unix *)
+
+let () =
+
+    let fd = Unix.openfile "Makefile" [] 0 in
+    fsync fd
+
+
+
+
+
 
 (* OptionMonad *)
 

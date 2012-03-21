@@ -1,0 +1,14 @@
+  My personal OCaml backpack
+==============================
+
+I never leave home without it!
+
+
+ What this library offers
+--------------------------
+
+Small OCaml library that includes:
+
+- Handy functions not present in standard library
+- Some new data structures: lazy lists
+- More functions from the UNIX API

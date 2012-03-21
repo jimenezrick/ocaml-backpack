@@ -1,21 +1,29 @@
-#MAIN = main.byte
-#MAIN = main.native
-MODS  = $(wildcard src/*.ml)
-IFS   = $(MODS:.ml=.inferred.mli)
+LIB = backpack
 
-TEST_MODS = $(wildcard test/*.ml)
-TESTS     = $(TEST_MODS:.ml=.byte)
+MLS  = $(wildcard src/*.ml)
+MLIS = $(MLS:.ml=.inferred.mli)
 
-OFLAGS = -I src -tag debug -ocamlrun 'ocamlrun -b'
+STUBS = $(wildcard src/*.c)
+OBJS  = $(STUBS:.c=.o)
 
-.PHONY: all test clean $(IFS) $(MAIN) $(TESTS)
+TEST_MLS = $(wildcard test/*.ml)
+TESTS    = $(TEST_MLS:.ml=.byte) $(TEST_MLS:.ml=.native)
 
-all: $(IFS) $(MAIN)
+OFLAGS = -I src -tag debug -ocamlrun 'ocamlrun -b' #-classic-display
 
-$(IFS) $(MAIN):
+.PHONY: all test clean $(MLIS) $(OBJS) $(LIB) $(TESTS)
+
+all: $(MLIS) $(LIB)
+
+$(MLIS) $(OBJS):
 	@ocamlbuild $(OFLAGS) $@
 
-test: $(TESTS)
+$(LIB): $(OBJS)
+	@ocamlbuild $(OFLAGS) $@.cma
+	@ocamlbuild $(OFLAGS) $@.cmxa
+	@cd _build; ocamlmklib -o $@ $+
+
+test: $(LIB) $(TESTS)
 
 $(TESTS):
 	@ocamlbuild $(OFLAGS) -no-links $@ --
