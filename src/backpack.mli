@@ -1,5 +1,9 @@
 module Unix :
-  sig external fsync : Unix.file_descr -> unit = "backpack_fsync" end
+  sig
+    external asctime : Unix.tm -> string = "caml_backpack_asctime"
+    external fsync : Unix.file_descr -> unit = "caml_backpack_fsync"
+    external fdatasync : Unix.file_descr -> unit = "caml_backpack_fdatasync"
+  end
 module StringMap :
   sig
     type key = String.t

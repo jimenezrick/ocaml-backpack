@@ -4,7 +4,7 @@
 #include <caml/threads.h>
 #include <caml/unixsupport.h>
 
-CAMLprim value backpack_fsync(value val_fd)
+CAMLprim value caml_backpack_fsync(value val_fd)
 {
 	CAMLparam1(val_fd);
 	int r;
@@ -13,8 +13,23 @@ CAMLprim value backpack_fsync(value val_fd)
 	r = fsync(Int_val(val_fd));
 	caml_leave_blocking_section();
 
-	if (r != 0)
+	if (r == -1)
 		uerror("fsync", Nothing);
+
+	CAMLreturn(Val_unit);
+}
+
+CAMLprim value caml_backpack_fdatasync(value val_fd)
+{
+	CAMLparam1(val_fd);
+	int r;
+
+	caml_enter_blocking_section();
+	r = fdatasync(Int_val(val_fd));
+	caml_leave_blocking_section();
+
+	if (r == -1)
+		uerror("fdatasync", Nothing);
 
 	CAMLreturn(Val_unit);
 }

@@ -11,4 +11,6 @@ Small OCaml module that extends the standard library with:
 
 - Handy miscellaneous functions
 - New data structures: lazy lists
-- More functions from UNIX
+- More functions from UNIX:
+	+ fsync, fdatasync
+	+ asctime
