@@ -4,18 +4,16 @@ open Backpack.Op
 open Backpack.Str
 open Backpack.LazyList
 
-
 (* Unix *)
 
 let () =
-
-    let fd = Unix.openfile "Makefile" [] 0 in
-    fsync fd
-
-
-
-
-
+    let fd = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
+    fsync fd;
+    Unix.close fd;
+    try
+        fsync fd;
+        assert false
+    with Unix.Unix_error (Unix.EBADF, _, _) -> ()
 
 (* OptionMonad *)
 
