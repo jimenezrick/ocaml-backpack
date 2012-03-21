@@ -9,7 +9,7 @@ OBJS  = $(STUBS:.c=.o)
 TEST_MLS = $(wildcard test/*.ml)
 TESTS    = $(TEST_MLS:.ml=.byte) $(TEST_MLS:.ml=.native)
 
-OFLAGS = -I src -tag debug -ocamlrun 'ocamlrun -b' #-classic-display
+OFLAGS = -I src -no-links -tag debug -ocamlrun 'ocamlrun -b' #-classic-display
 
 .PHONY: all test clean $(MLIS) $(OBJS) $(LIB) $(TESTS)
 
@@ -26,7 +26,7 @@ $(LIB): $(OBJS)
 test: $(LIB) $(TESTS)
 
 $(TESTS):
-	@ocamlbuild $(OFLAGS) -no-links $@ --
+	@ocamlbuild $(OFLAGS) $@ --
 
 clean:
 	@ocamlbuild $(OFLAGS) -clean
