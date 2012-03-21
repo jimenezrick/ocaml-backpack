@@ -1,5 +1,3 @@
-- Crear interfaces
 - Separar modulos en ficheros
 - Meter mas llamadas a UNIX
-- Crear META para findlib y usar en Makefile install con strip
 - El modulo Str deberia ser String

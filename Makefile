@@ -9,9 +9,19 @@ OBJS  = $(STUBS:.c=.o)
 TEST_MLS = $(wildcard test/*.ml)
 TESTS    = $(TEST_MLS:.ml=.byte) $(TEST_MLS:.ml=.native)
 
-OFLAGS = -I src -no-links -tag debug -ocamlrun 'ocamlrun -b' #-classic-display
+OFLAGS = -I src -no-links #-tag debug
 
-.PHONY: all test clean $(MLIS) $(OBJS) $(LIB) $(TESTS)
+INSTALL_FILES =                  \
+	src/META                 \
+	src/backpack.mli         \
+	_build/src/backpack.a    \
+	_build/src/backpack.cma  \
+	_build/src/backpack.cmi  \
+	_build/src/backpack.cmxa \
+	_build/libbackpack.a     \
+	_build/dllbackpack.so
+
+.PHONY: all test clean install $(MLIS) $(OBJS) $(LIB) $(TESTS)
 
 all: $(MLIS) $(LIB)
 
@@ -23,10 +33,14 @@ $(LIB): $(OBJS)
 	@ocamlbuild $(OFLAGS) $@.cmxa
 	@cd _build; ocamlmklib -o $@ $+
 
-test: $(LIB) $(TESTS)
+test: all $(TESTS)
 
 $(TESTS):
 	@LD_LIBRARY_PATH=_build ocamlbuild $(OFLAGS) $@ --
 
 clean:
 	@ocamlbuild $(OFLAGS) -clean
+
+install: all
+	@strip _build/dll$(LIB).so
+	@ocamlfind install $(LIB) $(INSTALL_FILES)
