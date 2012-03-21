@@ -26,7 +26,7 @@ $(LIB): $(OBJS)
 test: $(LIB) $(TESTS)
 
 $(TESTS):
-	@ocamlbuild $(OFLAGS) $@ --
+	@LD_LIBRARY_PATH=_build ocamlbuild $(OFLAGS) $@ --
 
 clean:
 	@ocamlbuild $(OFLAGS) -clean
