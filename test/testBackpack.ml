@@ -7,13 +7,29 @@ open Backpack.LazyList
 (* Unix *)
 
 let () =
+    let date = asctime (Unix.localtime (Unix.time ())) in
+    assert (date.[20] = '1' || date.[20] = '2');
+    Gc.full_major ()
+
+let () =
     let fd = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
     fsync fd;
     Unix.close fd;
     try
         fsync fd;
         assert false
-    with Unix.Unix_error (Unix.EBADF, _, _) -> ()
+    with Unix.Unix_error (Unix.EBADF, _, _) -> ();
+    Gc.full_major ()
+
+let () =
+    let fd = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
+    fdatasync fd;
+    Unix.close fd;
+    try
+        fdatasync fd;
+        assert false
+    with Unix.Unix_error (Unix.EBADF, _, _) -> ();
+    Gc.full_major ()
 
 (* OptionMonad *)
 

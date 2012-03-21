@@ -4,7 +4,7 @@
 #include <caml/memory.h>
 #include <caml/fail.h>
 
-CAMLprim value backpack_asctime(value val_tm)
+CAMLprim value caml_backpack_asctime(value val_tm)
 {
 	CAMLparam1(val_tm);
 	char buf[26];
