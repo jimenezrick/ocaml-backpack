@@ -6,6 +6,10 @@ open Backpack.LazyList
 (* Unix *)
 
 let () =
+    let fd = Unix.Epoll.create true in
+    Unix.close fd
+
+let () =
     let date = Unix.asctime (Unix.localtime (Unix.time ())) in
     assert (date.[20] = '1' || date.[20] = '2');
     Gc.full_major ()

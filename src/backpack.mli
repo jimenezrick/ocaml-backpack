@@ -514,6 +514,10 @@ module Unix :
     type flow_action = Unix.flow_action = TCOOFF | TCOON | TCIOFF | TCION
     val tcflow : file_descr -> flow_action -> unit
     val setsid : unit -> int
+    module Epoll :
+      sig
+        external create : bool -> file_descr = "caml_backpack_epoll_create"
+      end
     external asctime : tm -> string = "caml_backpack_asctime"
     external sync : unit -> unit = "caml_backpack_sync"
     external fsync : file_descr -> unit = "caml_backpack_fsync"

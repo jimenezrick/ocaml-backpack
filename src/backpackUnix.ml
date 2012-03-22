@@ -1,5 +1,10 @@
 include Unix
 
+module Epoll =
+    struct
+        external create : bool -> file_descr = "caml_backpack_epoll_create"
+    end
+
 external asctime : tm -> string = "caml_backpack_asctime"
 
 external sync : unit -> unit = "caml_backpack_sync"
