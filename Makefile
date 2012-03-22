@@ -7,9 +7,9 @@ STUBS = $(wildcard src/*.c)
 OBJS  = $(STUBS:.c=.o)
 
 TEST_MLS = $(wildcard test/*.ml)
-TESTS    = $(TEST_MLS:.ml=.byte) $(TEST_MLS:.ml=.native)
+TESTS    = $(TEST_MLS:.ml=.d.byte) $(TEST_MLS:.ml=.native)
 
-OFLAGS = -I src -no-links #-tag debug
+OFLAGS = -I src -no-links
 
 INSTALL_FILES =                  \
 	src/META                 \
