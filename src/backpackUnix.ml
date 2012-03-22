@@ -8,6 +8,10 @@ external fsync : file_descr -> unit = "caml_backpack_fsync"
 
 external fdatasync : file_descr -> unit = "caml_backpack_fdatasync"
 
+external mkstemp : string -> string * file_descr = "caml_backpack_mkstemp"
+
+external mkdtemp : string -> string = "caml_backpack_mkdtemp"
+
 type flock_op =
     | LOCK_SH
     | LOCK_EX
