@@ -9,8 +9,10 @@ I never leave home without it!
 
 Small OCaml module that extends the standard library with:
 
-- Handy miscellaneous functions
-- New data structures: lazy lists
+- Handy miscellaneous functions and operators
+- New data structures:
+	+ Lazy lists
 - More functions from UNIX:
 	+ fsync, fdatasync
 	+ asctime
+	+ flock

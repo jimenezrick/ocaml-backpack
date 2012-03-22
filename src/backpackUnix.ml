@@ -1,7 +1,23 @@
 include Unix
 
-external asctime : Unix.tm -> string = "caml_backpack_asctime"
+external asctime : tm -> string = "caml_backpack_asctime"
 
-external fsync : Unix.file_descr -> unit = "caml_backpack_fsync"
+external fsync : file_descr -> unit = "caml_backpack_fsync"
 
-external fdatasync : Unix.file_descr -> unit = "caml_backpack_fdatasync"
+external fdatasync : file_descr -> unit = "caml_backpack_fdatasync"
+
+type flock_op =
+    | LOCK_SH
+    | LOCK_EX
+    | LOCK_NB
+    | LOCK_UN
+
+external flock : file_descr -> flock_op list -> unit = "caml_backpack_flock"
+
+let is_regular path = (stat path).st_kind = S_REG
+
+let is_directory path = (stat path).st_kind = S_DIR
+
+let rec restart_on_EINTR f x =
+    try f x
+    with Unix_error (EINTR, _, _) -> restart_on_EINTR f x

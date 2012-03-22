@@ -30,6 +30,37 @@ let () =
     with Unix.Unix_error (Unix.EBADF, _, _) -> ();
     Gc.full_major ()
 
+
+
+
+(* XXX: String strip lstrip rstrip *)
+
+
+
+
+
+let () =
+    let fd  = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
+    let fd' = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
+    Unix.flock fd [Unix.LOCK_EX; Unix.LOCK_NB];
+    try
+        Unix.flock fd' [Unix.LOCK_EX; Unix.LOCK_NB];
+        assert false
+    with
+    | Unix.Unix_error (Unix.EAGAIN, _, _)      -> Unix.close fd';
+    | Unix.Unix_error (Unix.EWOULDBLOCK, _, _) -> Unix.close fd';
+    Unix.flock fd [Unix.LOCK_UN];
+    Unix.close fd;
+    try
+        Unix.flock fd [Unix.LOCK_EX];
+        assert false
+    with Unix.Unix_error (Unix.EBADF, _, _) -> ();
+    Gc.full_major ()
+
+let () =
+    assert (Unix.is_regular "Makefile");
+    assert (Unix.is_directory "src")
+
 (* StringMap *)
 
 let () =
@@ -65,11 +96,20 @@ let () =
     let g' c   = c + 1 in
     begin
         assert ((f |. g) 8 = 11);
-        assert (f' 2 $ g' 3 = 8);
-        assert (1 |< f = 2)
+        assert (f' 2 @@ g' 3 = 8);
+        assert (1 |> f = 2)
     end
 
 (* String *)
+
+let () =
+    begin
+        assert (String.split [] "foo" = ["f"; "o"; "o"]);
+        assert (String.split ["x"] ",foo,bar," = [",foo,bar,"]);
+        assert (String.split [","] ",foo,bar," = ["foo"; "bar"]);
+        assert (String.split ["::"] "::foo::bar::" = ["foo"; "bar"]);
+        assert (String.split ["::"; ","] "::foo::bar,fu" = ["foo"; "bar"; "fu"])
+    end
 
 let () =
     begin
@@ -127,6 +167,6 @@ let () =
 
 let () =
     let f _ = failwith "This shouldn't be raised" in
-    ignore $ from f
+    ignore @@ from f
 
 let () = print_endline "*** All tests passed ***"

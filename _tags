@@ -1,1 +1,1 @@
-<test/*.{byte,native}>: use_unix, use_backpack
+<test/*.{byte,native}>: use_str, use_unix, use_backpack

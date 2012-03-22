@@ -1,3 +1,4 @@
+val try_finalize : ('a -> 'b) -> 'a -> ('c -> 'd) -> 'c -> 'b
 module Unix :
   sig
     type error =
@@ -513,9 +514,20 @@ module Unix :
     type flow_action = Unix.flow_action = TCOOFF | TCOON | TCIOFF | TCION
     val tcflow : file_descr -> flow_action -> unit
     val setsid : unit -> int
-    external asctime : Unix.tm -> string = "caml_backpack_asctime"
-    external fsync : Unix.file_descr -> unit = "caml_backpack_fsync"
-    external fdatasync : Unix.file_descr -> unit = "caml_backpack_fdatasync"
+    external asctime : tm -> string = "caml_backpack_asctime"
+    external fsync : file_descr -> unit = "caml_backpack_fsync"
+    external fdatasync : file_descr -> unit = "caml_backpack_fdatasync"
+    type flock_op =
+      BackpackUnix.flock_op =
+        LOCK_SH
+      | LOCK_EX
+      | LOCK_NB
+      | LOCK_UN
+    external flock : file_descr -> flock_op list -> unit
+      = "caml_backpack_flock"
+    val is_regular : string -> bool
+    val is_directory : string -> bool
+    val restart_on_EINTR : ('a -> 'b) -> 'a -> 'b
   end
 module StringMap :
   sig
@@ -588,8 +600,10 @@ module Op :
   sig
     val id : 'a -> 'a
     val ( |. ) : ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b
-    val ( $ ) : ('a -> 'b) -> 'a -> 'b
-    val ( |< ) : 'a -> ('a -> 'b) -> 'b
+    val ( |.| ) : ('a -> 'b) -> ('c -> 'd) -> 'a -> 'c -> 'b * 'd
+    val ( |..| ) : ('a -> 'b) -> ('c -> 'd) -> 'a * 'c -> 'b * 'd
+    val ( @@ ) : ('a -> 'b) -> 'a -> 'b
+    val ( |> ) : 'a -> ('a -> 'b) -> 'b
   end
 module Char :
   sig
@@ -640,6 +654,7 @@ module String :
       = "caml_blit_string" "noalloc"
     external unsafe_fill : string -> int -> int -> char -> unit
       = "caml_fill_string" "noalloc"
+    val split : string list -> string -> string list
     val explode : string -> char list
     val implode : char list -> string
   end

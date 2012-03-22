@@ -1,3 +1,8 @@
+let try_finalize f x finally y =
+    let res = try f x with ex -> finally y; raise ex in
+    finally y;
+    res
+
 module Unix = BackpackUnix
 
 module StringMap = Map.Make (String)
@@ -25,11 +30,15 @@ module Op =
         (* Function composition operator *)
         let ( |. ) f g = fun x -> f (g x)
 
+        let ( |.| ) f g = fun x y -> (f x, g y)
+
+        let ( |..| ) f g = fun (x, y) -> (f x, g y)
+
         (* Reduce function application precedence operator *)
-        let ( $ ) f x = f x
+        let ( @@ ) f x = f x
 
         (* Reverse function application operator *)
-        let ( |< ) x f = f x
+        let ( |> ) x f = f x
     end
 
 module Char =
@@ -48,6 +57,10 @@ module Char =
 module String =
     struct
         include String
+
+        let split seps s =
+            let regexp = String.concat "\\|" (List.map (Str.quote) seps) in
+            Str.split (Str.regexp regexp) s
 
         let explode s =
             let rec explode' i l =
