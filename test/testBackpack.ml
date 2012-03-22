@@ -1,35 +1,48 @@
-open Backpack.Unix
+open Backpack
 open Backpack.OptionMonad
 open Backpack.Op
-open Backpack.Str
 open Backpack.LazyList
 
 (* Unix *)
 
 let () =
-    let date = asctime (Unix.localtime (Unix.time ())) in
+    let date = Unix.asctime (Unix.localtime (Unix.time ())) in
     assert (date.[20] = '1' || date.[20] = '2');
     Gc.full_major ()
 
 let () =
     let fd = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
-    fsync fd;
+    Unix.fsync fd;
     Unix.close fd;
     try
-        fsync fd;
+        Unix.fsync fd;
         assert false
     with Unix.Unix_error (Unix.EBADF, _, _) -> ();
     Gc.full_major ()
 
 let () =
     let fd = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
-    fdatasync fd;
+    Unix.fdatasync fd;
     Unix.close fd;
     try
-        fdatasync fd;
+        Unix.fdatasync fd;
         assert false
     with Unix.Unix_error (Unix.EBADF, _, _) -> ();
     Gc.full_major ()
+
+(* StringMap *)
+
+let () =
+    let map  = StringMap.empty in
+    let map' = StringMap.add "foo" "bar" map in
+    assert (StringMap.find "foo" map' = "bar")
+
+(* IntMap *)
+
+let () =
+    let map  = IntMap.empty in
+    let map' = IntMap.add 123 666 map in
+    assert (IntMap.find 123 map' = 666)
 
 (* OptionMonad *)
 
@@ -56,12 +69,12 @@ let () =
         assert (1 |< f = 2)
     end
 
-(* Str *)
+(* String *)
 
 let () =
     begin
-        assert (explode "abc" = ['a'; 'b'; 'c']);
-        assert (implode ['a'; 'b'; 'c'] = "abc")
+        assert (String.explode "abc" = ['a'; 'b'; 'c']);
+        assert (String.implode ['a'; 'b'; 'c'] = "abc")
     end
 
 (* LazyList *)

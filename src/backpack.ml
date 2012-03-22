@@ -34,6 +34,8 @@ module Op =
 
 module Char =
     struct
+        include Char
+
         let is_blank c = c = ' ' || c = '\t'
 
         let is_num c = c >= '0' && c <= '9'
@@ -43,8 +45,10 @@ module Char =
         let is_alphanum c = is_alpha c || is_num c
     end
 
-module Str =
+module String =
     struct
+        include String
+
         let explode s =
             let rec explode' i l =
                 if i < 0 then l else explode' (i - 1) (s.[i] :: l)

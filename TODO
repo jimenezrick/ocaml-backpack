@@ -1,3 +1,2 @@
 - Separar modulos en ficheros
-- Meter mas llamadas a UNIX
-- El modulo Str deberia ser String
+- Meter mas llamadas de UNIX
