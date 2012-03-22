@@ -58,6 +58,24 @@ module String =
     struct
         include String
 
+        let lstrip chars s =
+            match chars with
+            | "" -> s
+            | _ ->
+                    let regexp = Str.regexp ("^[" ^ Str.quote chars ^ "]*") in
+                    ignore (Str.search_forward regexp s 0);
+                    Str.string_after s (Str.match_end ())
+
+        let rstrip chars s =
+            match chars with
+            | "" -> s
+            | _ ->
+                    let regexp = Str.regexp ("[" ^ Str.quote chars ^ "]*$") in
+                    ignore (Str.search_forward regexp s 0);
+                    Str.string_before s (Str.match_beginning ())
+
+        let strip chars s = lstrip chars (rstrip chars s)
+
         let split seps s =
             let regexp = String.concat "\\|" (List.map (Str.quote) seps) in
             Str.split (Str.regexp regexp) s

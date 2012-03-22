@@ -654,6 +654,9 @@ module String :
       = "caml_blit_string" "noalloc"
     external unsafe_fill : string -> int -> int -> char -> unit
       = "caml_fill_string" "noalloc"
+    val lstrip : string -> string -> string
+    val rstrip : string -> string -> string
+    val strip : string -> string -> string
     val split : string list -> string -> string list
     val explode : string -> char list
     val implode : char list -> string

@@ -30,15 +30,6 @@ let () =
     with Unix.Unix_error (Unix.EBADF, _, _) -> ();
     Gc.full_major ()
 
-
-
-
-(* XXX: String strip lstrip rstrip *)
-
-
-
-
-
 let () =
     let fd  = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
     let fd' = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
@@ -101,6 +92,31 @@ let () =
     end
 
 (* String *)
+
+let () =
+    begin
+        assert (String.lstrip "" ",.foo+bar" = ",.foo+bar");
+        assert (String.lstrip "2" ",.foo2bar" = ",.foo2bar");
+        assert (String.lstrip ".,+" ",.foo+bar" = "foo+bar");
+        assert (String.lstrip ".,+" ",." = "");
+        assert (String.lstrip ".,+" "" = "")
+    end
+
+let () =
+    begin
+        assert (String.rstrip "" "foo+bar,." = "foo+bar,.");
+        assert (String.rstrip "2" ",.foo2bar" = ",.foo2bar");
+        assert (String.rstrip ".,+" ",.foo+bar,." = ",.foo+bar");
+        assert (String.rstrip ".,+" ",." = "");
+        assert (String.rstrip ".,+" "" = "")
+    end
+
+let () =
+    begin
+        assert (String.strip "" "" = "");
+        assert (String.strip "" "foo" = "foo");
+        assert (String.strip ".," ",foo.bar.," = "foo.bar")
+    end
 
 let () =
     begin
