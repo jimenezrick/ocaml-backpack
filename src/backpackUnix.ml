@@ -2,6 +2,8 @@ include Unix
 
 external asctime : tm -> string = "caml_backpack_asctime"
 
+external sync : unit -> unit = "caml_backpack_sync"
+
 external fsync : file_descr -> unit = "caml_backpack_fsync"
 
 external fdatasync : file_descr -> unit = "caml_backpack_fdatasync"

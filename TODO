@@ -1,0 +1,5 @@
+- INI file parser
+- epoll, POSIX message queues, splice, mkstemp, mkdtemp
+- Multicast group join/leave: mcast_join, mcast_leave
+- Event loop
+- Some interesting data structure

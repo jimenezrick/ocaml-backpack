@@ -11,6 +11,10 @@ let () =
     Gc.full_major ()
 
 let () =
+    Unix.sync ();
+    Gc.full_major ()
+
+let () =
     let fd = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
     Unix.fsync fd;
     Unix.close fd;
