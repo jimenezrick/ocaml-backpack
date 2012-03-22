@@ -21,7 +21,7 @@ INSTALL_FILES =                  \
 	_build/libbackpack.a     \
 	_build/dllbackpack.so
 
-.PHONY: all test clean install $(MLIS) $(OBJS) $(LIB) $(TESTS)
+.PHONY: all test clean install uninstall $(MLIS) $(OBJS) $(LIB) $(TESTS)
 
 all: $(MLIS) $(LIB)
 
@@ -44,3 +44,6 @@ clean:
 install: all
 	@strip _build/dll$(LIB).so
 	@ocamlfind install $(LIB) $(INSTALL_FILES)
+
+uninstall:
+	@ocamlfind remove $(LIB)
