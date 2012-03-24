@@ -7,6 +7,7 @@
 CAMLprim value caml_backpack_asctime(value val_tm)
 {
 	CAMLparam1(val_tm);
+	CAMLlocal1(val_res);
 	char buf[26];
 	struct tm tm = {
 		.tm_sec   = Int_val(Field(val_tm, 0)),
@@ -23,5 +24,7 @@ CAMLprim value caml_backpack_asctime(value val_tm)
 	if (asctime_r(&tm, buf) == NULL)
 		caml_failwith("asctime_r");
 
-	CAMLreturn(caml_copy_string(buf));
+	val_res = caml_copy_string(buf);
+
+	CAMLreturn(val_res);
 }

@@ -2,7 +2,31 @@ include Unix
 
 module Epoll =
     struct
-        external create : bool -> file_descr = "caml_backpack_epoll_create"
+        type event_type =
+            | EPOLLIN
+            | EPOLLOUT
+            | EPOLLRDHUP
+            | EPOLLPRI
+            | EPOLLERR
+            | EPOLLHUP
+            | EPOLLET
+            | EPOLLONESHOT
+
+        external create1 : bool -> file_descr = "caml_backpack_epoll_create1"
+
+        let create () = create1 false
+
+        (*
+        add
+        modify
+        del
+        wait
+
+        add_data ?
+        wait_data ?
+        *)
+
+        external wait : unit -> (int * int) list = "caml_backpack_epoll_wait"
     end
 
 external asctime : tm -> string = "caml_backpack_asctime"

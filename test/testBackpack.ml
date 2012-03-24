@@ -6,7 +6,7 @@ open Backpack.LazyList
 (* Unix *)
 
 let () =
-    let fd = Unix.Epoll.create true in
+    let fd = Unix.Epoll.create1 true in
     Unix.close fd
 
 let () =
@@ -39,6 +39,17 @@ let () =
     Gc.full_major ()
 
 let () =
+    let name, fd = Unix.mkstemp "foo" in
+    Unix.close fd;
+    Unix.unlink name;
+    Gc.full_major ()
+
+let () =
+    let name = Unix.mkdtemp "bar" in
+    Unix.rmdir name;
+    Gc.full_major ()
+
+let () =
     let fd  = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
     let fd' = Unix.openfile "Makefile" [Unix.O_RDONLY] 0 in
     Unix.flock fd [Unix.LOCK_EX; Unix.LOCK_NB];
@@ -58,7 +69,8 @@ let () =
 
 let () =
     assert (Unix.is_regular "Makefile");
-    assert (Unix.is_directory "src")
+    assert (Unix.is_directory "src");
+    Gc.full_major ()
 
 (* StringMap *)
 

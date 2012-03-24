@@ -39,8 +39,8 @@ CAMLprim value caml_backpack_mkstemp(value val_path)
 	val_res_path = caml_copy_string(buf);
 	val_res      = caml_alloc_tuple(2);
 
-	Field(val_res, 0) = val_res_path;
-	Field(val_res, 1) = Val_int(fd);
+	Store_field(val_res, 0, val_res_path);
+	Store_field(val_res, 1, Val_int(fd));
 
 	CAMLreturn(val_res);
 }
@@ -48,6 +48,7 @@ CAMLprim value caml_backpack_mkstemp(value val_path)
 CAMLprim value caml_backpack_mkdtemp(value val_path)
 {
 	CAMLparam1(val_path);
+	CAMLlocal1(val_res);
 	char buf[PATH_MAX], *path;
 
 	init_mktemp("mkdtemp", buf, val_path);
@@ -58,5 +59,7 @@ CAMLprim value caml_backpack_mkdtemp(value val_path)
 	if (path == NULL)
 		uerror("mkdtemp", val_path);
 
-	CAMLreturn(caml_copy_string(buf));
+	val_res = caml_copy_string(buf);
+
+	CAMLreturn(val_res);
 }
