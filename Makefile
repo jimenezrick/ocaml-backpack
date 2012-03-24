@@ -24,6 +24,8 @@ INSTALL_FILES =                  \
 .PHONY: all test clean install uninstall $(MLIS) $(OBJS) $(LIB) $(TESTS)
 
 all: $(MLIS) $(LIB)
+	@cp _build/src/*.mli src
+	@rename .inferred '' src/*.mli
 
 $(MLIS) $(OBJS):
 	@ocamlbuild $(OFLAGS) $@
@@ -40,6 +42,7 @@ $(TESTS):
 
 clean:
 	@ocamlbuild $(OFLAGS) -clean
+	@rm -f src/*.mli
 
 install: all
 	@strip _build/dll$(LIB).so
