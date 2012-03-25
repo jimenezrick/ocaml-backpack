@@ -1,5 +1,5 @@
 - INI file parser
-- epoll, POSIX message queues, splice
+- POSIX message queues, splice
 - Multicast group join/leave: mcast_join, mcast_leave
 - Event loop
 - Some interesting data structure

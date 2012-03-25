@@ -13,6 +13,8 @@ Small OCaml module that extends the standard library with:
 - New data structures:
 	+ Lazy lists
 - More functions from UNIX:
-	+ fsync, fdatasync
-	+ asctime
+	+ epoll
+	+ sync, fsync, fdatasync
 	+ flock
+	+ mkstemp, mkdtemp
+	+ asctime

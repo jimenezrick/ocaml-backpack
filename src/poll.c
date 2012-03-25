@@ -13,6 +13,12 @@ static int epoll_events[] = {
 	EPOLLONESHOT
 };
 
+static int epoll_operations[] = {
+	EPOLL_CTL_ADD,
+	EPOLL_CTL_MOD,
+	EPOLL_CTL_DEL
+};
+
 CAMLprim value
 caml_backpack_epoll_create1(value val_cloexec)
 {
@@ -26,6 +32,22 @@ caml_backpack_epoll_create1(value val_cloexec)
 	val_res = Val_int(fd);
 
 	CAMLreturn(val_res);
+}
+
+CAMLprim value
+caml_backpack_epoll_ctl(value val_epfd, value val_op, value val_fd, value val_events)
+{
+	CAMLparam4(val_epfd, val_op, val_fd, val_events);
+	int op = epoll_operations[Int_val(val_op)];
+	struct epoll_event event = {
+		.events  = caml_convert_flag_list(val_events, epoll_events),
+		.data.fd = Int_val(val_fd)
+	};
+
+	if (epoll_ctl(Int_val(val_epfd), op, Int_val(val_fd), &event) == -1)
+		uerror("epoll_ctl", Nothing);
+
+	CAMLreturn(Val_unit);
 }
 
 CAMLprim value
