@@ -1,5 +1,11 @@
 include Unix
 
+let input_proc_int path =
+    let chan = open_in path in
+    let line = input_line chan in
+    close_in chan;
+    int_of_string line
+
 module Epoll =
     struct
         type epoll_descr = file_descr
@@ -32,6 +38,42 @@ module Epoll =
         let del epfd fd = ctl epfd EPOLL_CTL_DEL fd []
 
         external wait : epoll_descr -> int -> int -> (event list * file_descr) list = "caml_backpack_epoll_wait"
+    end
+
+module Mqueue =
+    struct
+        type mqueue_descr = file_descr
+
+        type flag =
+            | O_RDONLY
+            | O_WRONLY
+            | O_RDWR
+            | O_NONBLOCK
+            | O_CREAT
+            | O_EXCL
+
+        let msg_max () = input_proc_int "/proc/sys/fs/mqueue/msg_max"
+
+        let msgsize_max () = input_proc_int "/proc/sys/fs/mqueue/msgsize_max"
+
+        let queues_max () = input_proc_int "/proc/sys/fs/mqueue/queues_max"
+
+        external prio_max : unit -> int = "caml_backpack_mq_prio_max"
+
+
+
+
+
+        (* XXX: attr *)
+        external open_mq : string -> flag list -> file_perm -> mqueue_descr = "caml_backpack_mq_open"
+
+        external close : mqueue_descr -> unit = "caml_backpack_mq_close"
+
+        external unlink : string -> unit = "caml_backpack_mq_unlink"
+
+
+
+
     end
 
 external asctime : tm -> string = "caml_backpack_asctime"

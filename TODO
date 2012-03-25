@@ -1,5 +1,5 @@
 - INI file parser
-- POSIX message queues, splice
+- splice vs. sendfile, sysinfo, sysconf
 - Multicast group join/leave: mcast_join, mcast_leave
 - Event loop
 - Some interesting data structure

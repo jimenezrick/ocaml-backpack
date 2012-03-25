@@ -9,7 +9,8 @@ OBJS  = $(STUBS:.c=.o)
 TEST_MLS = $(wildcard test/*.ml)
 TESTS    = $(TEST_MLS:.ml=.d.byte) $(TEST_MLS:.ml=.native)
 
-OFLAGS = -I src -no-links
+OFLAGS  = -I src -no-links
+LDFLAGS = -lrt
 
 INSTALL_FILES =                  \
 	src/META                 \
@@ -33,7 +34,7 @@ $(MLIS) $(OBJS):
 $(LIB): $(OBJS)
 	@ocamlbuild $(OFLAGS) $@.cma
 	@ocamlbuild $(OFLAGS) $@.cmxa
-	@cd _build; ocamlmklib -o $@ $+
+	@cd _build; ocamlmklib $(LDFLAGS) -o $@ $+
 
 test: all $(TESTS)
 

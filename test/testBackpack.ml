@@ -26,6 +26,35 @@ let () =
     Unix.close epfd;
     Gc.full_major ()
 
+
+
+
+
+
+
+
+
+let () =
+    assert (Unix.Mqueue.msg_max () > 0);
+    assert (Unix.Mqueue.msgsize_max () > 0);
+    assert (Unix.Mqueue.queues_max () > 0);
+    assert (Unix.Mqueue.prio_max () >= 32);
+    Gc.full_major ()
+
+
+
+(* XXX XXX XXX *)
+let () =
+    let mq = Unix.Mqueue.open_mq "/foo" [Unix.Mqueue.O_CREAT; Unix.Mqueue.O_RDWR] 0o666 in
+    Unix.Mqueue.close mq;
+    Unix.Mqueue.unlink "/foo";
+    Gc.full_major ()
+(* XXX XXX XXX *)
+
+
+
+
+
 let () =
     let date = Unix.asctime (Unix.localtime (Unix.time ())) in
     assert (date.[20] = '1' || date.[20] = '2');

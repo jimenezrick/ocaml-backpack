@@ -7,6 +7,6 @@ dispatch begin function
             flag ["link"; "ocaml"; "byte"; "use_backpack"]
                  (S [A "-dllib"; A "-lbackpack"]);
             flag ["link"; "ocaml"; "native"; "use_backpack"]
-                 (S [A "-cclib"; A "-lbackpack"])
+                 (S [A "-cclib"; A "-lbackpack"; A "-cclib"; A "-lrt"])
     | _ -> ()
 end
