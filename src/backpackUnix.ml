@@ -78,16 +78,11 @@ module Mqueue =
 
         external getattr : mqueue_descr -> attributes = "caml_backpack_mq_getattr"
 
+        external setattr : mqueue_descr -> flag list -> unit = "caml_backpack_mq_setattr"
 
+        let set_nonblock mqfd = setattr mqfd [O_NONBLOCK]
 
-
-        (*external set_nonblock : mqueue_descr -> unit*)
-
-
-
-
-
-
+        let clear_nonblock mqfd = setattr mqfd []
     end
 
 external asctime : tm -> string = "caml_backpack_asctime"

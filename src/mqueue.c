@@ -92,3 +92,17 @@ caml_backpack_mq_getattr(value val_mq)
 
 	CAMLreturn(val_res);
 }
+
+CAMLprim value
+caml_backpack_mq_setattr(value val_mq, value val_flags)
+{
+	CAMLparam2(val_mq, val_flags);
+	struct mq_attr attr = {
+		.mq_flags = caml_convert_flag_list(val_flags, mqueue_flags)
+	};
+
+	if (mq_setattr(Int_val(val_mq), &attr, NULL) == -1)
+		uerror("mq_setattr", Nothing);
+
+	CAMLreturn(Val_unit);
+}
