@@ -2,6 +2,8 @@ include Unix
 
 module Epoll =
     struct
+        type epoll_descr = file_descr
+
         type event =
             | EPOLLIN
             | EPOLLOUT
@@ -12,16 +14,16 @@ module Epoll =
             | EPOLLET
             | EPOLLONESHOT
 
-        external create1 : bool -> file_descr = "caml_backpack_epoll_create1"
-
-        let create () = create1 false
-
         type operation =
             | EPOLL_CTL_ADD
             | EPOLL_CTL_MOD
             | EPOLL_CTL_DEL
 
-        external ctl : file_descr -> operation -> file_descr -> event list -> unit = "caml_backpack_epoll_ctl"
+        external create1 : bool -> epoll_descr = "caml_backpack_epoll_create1"
+
+        let create () = create1 false
+
+        external ctl : epoll_descr -> operation -> file_descr -> event list -> unit = "caml_backpack_epoll_ctl"
 
         let add epfd fd events = ctl epfd EPOLL_CTL_ADD fd events
 
@@ -29,7 +31,7 @@ module Epoll =
 
         let del epfd fd = ctl epfd EPOLL_CTL_DEL fd []
 
-        external wait : file_descr -> int -> int -> (event list * file_descr) list = "caml_backpack_epoll_wait"
+        external wait : epoll_descr -> int -> int -> (event list * file_descr) list = "caml_backpack_epoll_wait"
     end
 
 external asctime : tm -> string = "caml_backpack_asctime"
