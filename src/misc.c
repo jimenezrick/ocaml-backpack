@@ -18,6 +18,7 @@ caml_backpack_unpack_flags(int pack, int *flags, int flags_len)
 {
 	CAMLparam0();
 	CAMLlocal1(flags_list);
+	int i;
 
 	flags_list = Val_emptylist;
 	for (i = 0; i < flags_len; i++) {
