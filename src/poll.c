@@ -19,14 +19,16 @@ static int epoll_operations[] = {
 	EPOLL_CTL_DEL
 };
 
-CAMLprim value
-caml_backpack_epoll_create1(value val_cloexec)
-{
-	CAMLparam1(val_cloexec);
-	CAMLlocal1(val_res);
-	int fd;
+static int epoll_flags[] = { EPOLL_CLOEXEC };
 
-	if ((fd = epoll_create1(Bool_val(val_cloexec) ? EPOLL_CLOEXEC : 0)) == -1)
+CAMLprim value
+caml_backpack_epoll_create1(value val_flags)
+{
+	CAMLparam1(val_flags);
+	CAMLlocal1(val_res);
+	int fd, flags = caml_convert_flag_list(val_flags, epoll_flags);
+
+	if ((fd = epoll_create1(flags)) == -1)
 		uerror("epoll_create1", Nothing);
 
 	val_res = Val_int(fd);

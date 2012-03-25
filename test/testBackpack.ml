@@ -6,7 +6,7 @@ open Backpack.LazyList
 (* Unix *)
 
 let () =
-    let epfd = Unix.Epoll.create1 true in
+    let epfd = Unix.Epoll.create1 [Unix.Epoll.EPOLL_CLOEXEC] in
     assert (Unix.Epoll.wait epfd 10 0 = []);
     let r_fd, w_fd = Unix.pipe () in
     Unix.Epoll.add epfd r_fd [Unix.Epoll.EPOLLIN];

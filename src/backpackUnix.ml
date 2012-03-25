@@ -25,9 +25,11 @@ module Epoll =
             | EPOLL_CTL_MOD
             | EPOLL_CTL_DEL
 
-        external create1 : bool -> epoll_descr = "caml_backpack_epoll_create1"
+        type flag = EPOLL_CLOEXEC
 
-        let create () = create1 false
+        external create1 : flag list -> epoll_descr = "caml_backpack_epoll_create1"
+
+        let create () = create1 []
 
         external ctl : epoll_descr -> operation -> file_descr -> event list -> unit = "caml_backpack_epoll_ctl"
 
