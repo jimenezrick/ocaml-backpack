@@ -1,5 +1,6 @@
 - INI file parser
 - splice vs. sendfile, sysinfo, sysconf
 - Multicast group join/leave: mcast_join, mcast_leave
+- SHA-256
 - Event loop
 - Some interesting data structure

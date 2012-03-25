@@ -57,8 +57,8 @@ module Mqueue =
         type attributes = flag list * int * int * int
 
         type open_attrs =
-            | Defs
-            | Attrs of int * int
+            | Mq_defs
+            | Mq_attrs of int * int
 
         let msg_max () = input_proc_int "/proc/sys/fs/mqueue/msg_max"
 
@@ -70,7 +70,7 @@ module Mqueue =
 
         external create_mq : string -> flag list -> file_perm -> open_attrs -> mqueue_descr = "caml_backpack_mq_open"
 
-        let open_mq name flags = create_mq name flags 0 Defs
+        let open_mq name flags = create_mq name flags 0 Mq_defs
 
         external close : mqueue_descr -> unit = "caml_backpack_mq_close"
 

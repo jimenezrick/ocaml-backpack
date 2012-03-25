@@ -34,7 +34,8 @@ let () =
     Gc.full_major ()
 
 let () =
-    let mq  = Unix.Mqueue.create_mq "/foo" [Unix.Mqueue.O_CREAT; Unix.Mqueue.O_RDWR] 0o666 Unix.Mqueue.Defs in
+    let open Unix.Mqueue in
+    let mq  = Unix.Mqueue.create_mq "/foo" [O_CREAT; O_RDWR] 0o666 Mq_defs in
     let mq' = Unix.Mqueue.open_mq "/foo" [Unix.Mqueue.O_RDONLY] in
     let flags, maxmsg, msgsize, curmsgs = Unix.Mqueue.getattr mq in
     assert (flags = []);
@@ -47,7 +48,8 @@ let () =
     Gc.full_major ()
 
 let () =
-    let mq  = Unix.Mqueue.create_mq "/foo" [Unix.Mqueue.O_CREAT; Unix.Mqueue.O_RDWR] 0o666 (Unix.Mqueue.Attrs (10, 100)) in
+    let open Unix.Mqueue in
+    let mq  = Unix.Mqueue.create_mq "/foo" [O_CREAT; O_RDWR] 0o666 (Mq_attrs (10, 100)) in
     let mq' = Unix.Mqueue.open_mq "/foo" [Unix.Mqueue.O_RDONLY] in
     let flags, maxmsg, msgsize, curmsgs = Unix.Mqueue.getattr mq in
     assert (flags = []);
