@@ -37,8 +37,8 @@ caml_backpack_mq_open(value val_name, value val_flags, value val_mode, value val
 	if (Is_long(val_attr))
 		pattr = NULL;
 	else {
-		attr.mq_maxmsg  = Int_val(Field(val_attr, 0));
-		attr.mq_msgsize = Int_val(Field(val_attr, 1));
+		attr.mq_maxmsg  = Long_val(Field(val_attr, 0));
+		attr.mq_msgsize = Long_val(Field(val_attr, 1));
 		pattr           = &attr;
 	}
 
@@ -86,9 +86,9 @@ caml_backpack_mq_getattr(value val_mq)
 	Store_field(val_res, 0,
 		    caml_backpack_unpack_flags(attr.mq_flags, mqueue_flags,
 					       BACKPACK_FLAGS_LEN(mqueue_flags)));
-	Store_field(val_res, 1, Val_int(attr.mq_maxmsg));
-	Store_field(val_res, 2, Val_int(attr.mq_msgsize));
-	Store_field(val_res, 3, Val_int(attr.mq_curmsgs));
+	Store_field(val_res, 1, Val_long(attr.mq_maxmsg));
+	Store_field(val_res, 2, Val_long(attr.mq_msgsize));
+	Store_field(val_res, 3, Val_long(attr.mq_curmsgs));
 
 	CAMLreturn(val_res);
 }
@@ -105,4 +105,36 @@ caml_backpack_mq_setattr(value val_mq, value val_flags)
 		uerror("mq_setattr", Nothing);
 
 	CAMLreturn(Val_unit);
+}
+
+CAMLprim value
+caml_backpack_mq_send(value val_mq, value val_buff, value val_ofs,
+		      value val_len, value val_prio)
+{
+	CAMLparam5(val_mq, val_buff, val_ofs, val_len, val_prio);
+
+	if (mq_send(Int_val(val_mq), &Byte(val_buff, Long_val(val_ofs)),
+		    Long_val(val_len), Int_val(val_prio)) == -1)
+		uerror("mq_send", Nothing);
+
+	CAMLreturn(Val_unit);
+}
+
+CAMLprim value
+caml_backpack_mq_receive(value val_mq, value val_buff, value val_ofs, value val_len)
+{
+	CAMLparam4(val_mq, val_buff, val_ofs, val_len);
+	CAMLlocal1(val_res);
+	unsigned int prio;
+	ssize_t size;
+
+	if ((size = mq_receive(Int_val(val_mq), &Byte(val_buff, Long_val(val_ofs)),
+			       Long_val(val_len), &prio)) == -1)
+		uerror("mq_receive", Nothing);
+
+	val_res = caml_alloc_tuple(2);
+	Store_field(val_res, 0, Val_long(size));
+	Store_field(val_res, 1, Val_int(prio));
+
+	CAMLreturn(val_res);
 }

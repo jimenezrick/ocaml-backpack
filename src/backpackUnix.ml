@@ -83,6 +83,10 @@ module Mqueue =
         let set_nonblock mqfd = setattr mqfd [O_NONBLOCK]
 
         let clear_nonblock mqfd = setattr mqfd []
+
+        external send : mqueue_descr -> string -> int -> int -> int -> unit = "caml_backpack_mq_send"
+
+        external receive : mqueue_descr -> string -> int -> int -> int * int = "caml_backpack_mq_receive"
     end
 
 external asctime : tm -> string = "caml_backpack_asctime"
