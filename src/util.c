@@ -23,7 +23,7 @@ caml_backpack_unpack_flags(int pack, int *flags, int flags_len)
 	flags_list = Val_emptylist;
 	for (i = 0; i < flags_len; i++) {
 		if (pack & flags[i])
-			flags_list = caml_backpack_cons(flags_list, i);
+			flags_list = caml_backpack_cons(flags_list, Val_int(i));
 	}
 
 	CAMLreturn(flags_list);

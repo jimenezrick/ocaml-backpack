@@ -6,8 +6,25 @@ open Backpack.LazyList
 (* Unix *)
 
 let () =
-    let fd = Unix.Epoll.create1 true in
-    Unix.close fd
+    let epfd = Unix.Epoll.create1 true in
+    assert (Unix.Epoll.wait epfd 10 0 = []);
+    let r_fd, w_fd = Unix.pipe () in
+    Unix.Epoll.add epfd r_fd [Unix.Epoll.EPOLLIN];
+    Unix.Epoll.add epfd w_fd [Unix.Epoll.EPOLLOUT];
+    assert (Unix.Epoll.wait epfd 10 0 = [([Unix.Epoll.EPOLLOUT], w_fd)]);
+    assert (Unix.Epoll.wait epfd 10 0 = [([Unix.Epoll.EPOLLOUT], w_fd)]);
+    Unix.Epoll.del epfd w_fd;
+    assert (Unix.Epoll.wait epfd 10 0 = []);
+    assert (Unix.write w_fd "x" 0 1 = 1);
+    assert (Unix.Epoll.wait epfd 10 0 = [([Unix.Epoll.EPOLLIN], r_fd)]);
+    assert (Unix.Epoll.wait epfd 10 0 = [([Unix.Epoll.EPOLLIN], r_fd)]);
+    let buf = String.create 1 in
+    assert (Unix.read r_fd buf 0 1 = 1);
+    assert (Unix.Epoll.wait epfd 10 0 = []);
+    Unix.close r_fd;
+    Unix.close w_fd;
+    Unix.close epfd;
+    Gc.full_major ()
 
 let () =
     let date = Unix.asctime (Unix.localtime (Unix.time ())) in
