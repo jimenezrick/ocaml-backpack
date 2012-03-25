@@ -1,12 +1,11 @@
 #include <unistd.h>
-#include <caml/mlvalues.h>
-#include <caml/memory.h>
-#include <caml/threads.h>
-#include <caml/unixsupport.h>
 
-CAMLprim value caml_backpack_sync(void)
+#include "backpack.h"
+
+CAMLprim value
+caml_backpack_sync(value val_unit)
 {
-	CAMLparam0();
+	CAMLparam1(val_unit);
 
 	caml_enter_blocking_section();
 	sync();
@@ -15,7 +14,8 @@ CAMLprim value caml_backpack_sync(void)
 	CAMLreturn(Val_unit);
 }
 
-CAMLprim value caml_backpack_fsync(value val_fd)
+CAMLprim value
+caml_backpack_fsync(value val_fd)
 {
 	CAMLparam1(val_fd);
 	int r;
@@ -30,7 +30,8 @@ CAMLprim value caml_backpack_fsync(value val_fd)
 	CAMLreturn(Val_unit);
 }
 
-CAMLprim value caml_backpack_fdatasync(value val_fd)
+CAMLprim value
+caml_backpack_fdatasync(value val_fd)
 {
 	CAMLparam1(val_fd);
 	int r;

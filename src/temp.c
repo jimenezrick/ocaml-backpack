@@ -1,15 +1,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#include <caml/mlvalues.h>
-#include <caml/alloc.h>
-#include <caml/memory.h>
-#include <caml/fail.h>
-#include <caml/threads.h>
-#include <caml/unixsupport.h>
 
-static void init_mktemp(const char *where, char *buf, value val_path)
+#include "backpack.h"
+
+static void
+init_mktemp(const char *where, char *buf, value val_path)
 {
+	CAMLparam1(val_path);
 	int i, len = caml_string_length(val_path);
 
 	if (len > PATH_MAX - 7)
@@ -19,9 +17,12 @@ static void init_mktemp(const char *where, char *buf, value val_path)
 	for (i = len; i < len + 6; i++)
 		buf[i] = 'X';
 	buf[len + 6] = '\0';
+
+	CAMLreturn0;
 }
 
-CAMLprim value caml_backpack_mkstemp(value val_path)
+CAMLprim value
+caml_backpack_mkstemp(value val_path)
 {
 	CAMLparam1(val_path);
 	CAMLlocal2(val_res_path, val_res);
@@ -45,7 +46,8 @@ CAMLprim value caml_backpack_mkstemp(value val_path)
 	CAMLreturn(val_res);
 }
 
-CAMLprim value caml_backpack_mkdtemp(value val_path)
+CAMLprim value
+caml_backpack_mkdtemp(value val_path)
 {
 	CAMLparam1(val_path);
 	CAMLlocal1(val_res);

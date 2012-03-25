@@ -1,10 +1,9 @@
 #include <time.h>
-#include <caml/mlvalues.h>
-#include <caml/alloc.h>
-#include <caml/memory.h>
-#include <caml/fail.h>
 
-CAMLprim value caml_backpack_asctime(value val_tm)
+#include "backpack.h"
+
+CAMLprim value
+caml_backpack_asctime(value val_tm)
 {
 	CAMLparam1(val_tm);
 	CAMLlocal1(val_res);

@@ -1,40 +1,58 @@
 #include <sys/epoll.h>
-#include <caml/mlvalues.h>
-#include <caml/alloc.h>
-#include <caml/memory.h>
-#include <caml/unixsupport.h>
 
-CAMLprim value caml_backpack_epoll_create1(value val_cloexec)
+#include "backpack.h"
+
+static int epoll_events[] = {
+	EPOLLIN,
+	EPOLLOUT,
+	EPOLLRDHUP,
+	EPOLLPRI,
+	EPOLLERR,
+	EPOLLHUP,
+	EPOLLET,
+	EPOLLONESHOT
+};
+
+CAMLprim value
+caml_backpack_epoll_create1(value val_cloexec)
 {
 	CAMLparam1(val_cloexec);
+	CAMLlocal1(val_res);
 	int fd;
 
-	fd = epoll_create1(Bool_val(val_cloexec) ? EPOLL_CLOEXEC : 0);
-	if (fd == -1)
+	if ((fd = epoll_create1(Bool_val(val_cloexec) ? EPOLL_CLOEXEC : 0)) == -1)
 		uerror("epoll_create1", Nothing);
 
-	CAMLreturn(Val_int(fd));
+	val_res = Val_int(fd);
+
+	CAMLreturn(val_res);
 }
 
-CAMLprim value caml_backpack_epoll_wait(void)
+CAMLprim value
+caml_backpack_epoll_wait(value val_epfd, value val_maxevents, value val_timeout)
 {
-	CAMLparam0();
-	CAMLlocal3(head, cons, list);
-	int i;
+	CAMLparam3(val_epfd, val_maxevents, val_timeout);
+	CAMLlocal2(events_list, elem);
+	struct epoll_event events[Int_val(val_maxevents)];
+	int num_events, i;
 
-	head = caml_alloc_tuple(2);
-	Store_field(head, 0, Val_int(123));
-	Store_field(head, 1, Val_int(666));
+	caml_enter_blocking_section();
+	num_events = epoll_wait(Int_val(val_epfd), events, Int_val(val_maxevents),
+				Int_val(val_timeout));
+	caml_leave_blocking_section();
 
-	list = Val_emptylist;
+	if (num_events == -1)
+		uerror("epoll_wait", Nothing);
 
-	for (i = 0; i < 3; i++) {
-		cons = caml_alloc(2, 0);
-		Store_field(cons, 0, head);
-		Store_field(cons, 1, list);
-
-		list = cons;
+	events_list = Val_emptylist;
+	for (i = 0; i < num_events; i++) {
+		elem = caml_alloc_tuple(2);
+		Store_field(elem, 0,
+			    caml_backpack_unpack_flags(events[i].events, epoll_events,
+						       BACKPACK_FLAGS_LEN(epoll_events)));
+		Store_field(elem, 1, Val_int(events[i].data.fd));
+		events_list = caml_backpack_cons(events_list, elem);
 	}
 
-	CAMLreturn(list);
+	CAMLreturn(events_list);
 }
