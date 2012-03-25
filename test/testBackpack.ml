@@ -26,14 +26,6 @@ let () =
     Unix.close epfd;
     Gc.full_major ()
 
-
-
-
-
-
-
-
-
 let () =
     assert (Unix.Mqueue.msg_max () > 0);
     assert (Unix.Mqueue.msgsize_max () > 0);
@@ -41,19 +33,31 @@ let () =
     assert (Unix.Mqueue.prio_max () >= 32);
     Gc.full_major ()
 
-
-
-(* XXX XXX XXX *)
 let () =
-    let mq = Unix.Mqueue.open_mq "/foo" [Unix.Mqueue.O_CREAT; Unix.Mqueue.O_RDWR] 0o666 in
+    let mq  = Unix.Mqueue.create_mq "/foo" [Unix.Mqueue.O_CREAT; Unix.Mqueue.O_RDWR] 0o666 Unix.Mqueue.Defs in
+    let mq' = Unix.Mqueue.open_mq "/foo" [Unix.Mqueue.O_RDONLY] in
+    let flags, maxmsg, msgsize, curmsgs = Unix.Mqueue.getattr mq in
+    assert (flags = []);
+    assert (maxmsg = Unix.Mqueue.msg_max ());
+    assert (msgsize = Unix.Mqueue.msgsize_max ());
+    assert (curmsgs = 0);
+    Unix.Mqueue.close mq';
     Unix.Mqueue.close mq;
     Unix.Mqueue.unlink "/foo";
     Gc.full_major ()
-(* XXX XXX XXX *)
 
-
-
-
+let () =
+    let mq  = Unix.Mqueue.create_mq "/foo" [Unix.Mqueue.O_CREAT; Unix.Mqueue.O_RDWR] 0o666 (Unix.Mqueue.Attrs (10, 100)) in
+    let mq' = Unix.Mqueue.open_mq "/foo" [Unix.Mqueue.O_RDONLY] in
+    let flags, maxmsg, msgsize, curmsgs = Unix.Mqueue.getattr mq in
+    assert (flags = []);
+    assert (maxmsg = 10);
+    assert (msgsize = 100);
+    assert (curmsgs = 0);
+    Unix.Mqueue.close mq';
+    Unix.Mqueue.close mq;
+    Unix.Mqueue.unlink "/foo";
+    Gc.full_major ()
 
 let () =
     let date = Unix.asctime (Unix.localtime (Unix.time ())) in

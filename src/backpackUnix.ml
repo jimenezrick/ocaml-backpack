@@ -52,6 +52,12 @@ module Mqueue =
             | O_CREAT
             | O_EXCL
 
+        type attributes = flag list * int * int * int
+
+        type open_attrs =
+            | Defs
+            | Attrs of int * int
+
         let msg_max () = input_proc_int "/proc/sys/fs/mqueue/msg_max"
 
         let msgsize_max () = input_proc_int "/proc/sys/fs/mqueue/msgsize_max"
@@ -60,16 +66,22 @@ module Mqueue =
 
         external prio_max : unit -> int = "caml_backpack_mq_prio_max"
 
+        external create_mq : string -> flag list -> file_perm -> open_attrs -> mqueue_descr = "caml_backpack_mq_open"
 
-
-
-
-        (* XXX: attr *)
-        external open_mq : string -> flag list -> file_perm -> mqueue_descr = "caml_backpack_mq_open"
+        let open_mq name flags = create_mq name flags 0 Defs
 
         external close : mqueue_descr -> unit = "caml_backpack_mq_close"
 
         external unlink : string -> unit = "caml_backpack_mq_unlink"
+
+        external getattr : mqueue_descr -> attributes = "caml_backpack_mq_getattr"
+
+
+
+
+        (*external set_nonblock : mqueue_descr -> unit*)
+
+
 
 
 
