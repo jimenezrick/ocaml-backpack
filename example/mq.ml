@@ -33,10 +33,10 @@ let recv_loop () =
         f mq
     in f mq
 
-let usage () = Printf.fprintf stderr "Usage: %s -s|-r\n" Sys.argv.(0)
+let usage () = Printf.fprintf stderr "Usage: %s -send|-recv\n" Sys.argv.(0)
 
 let () =
     match Sys.argv with
-    | [|_; "-s"|] -> send_loop ()
-    | [|_; "-r"|] -> recv_loop ()
-    | _           -> usage ()
+    | [|_; "-send"|] -> send_loop ()
+    | [|_; "-recv"|] -> recv_loop ()
+    | _              -> usage ()

@@ -121,7 +121,15 @@ type flock_op =
 
 external flock : file_descr -> flock_op list -> unit = "caml_backpack_flock"
 
-external sendfile : file_descr -> file_descr -> int -> int -> int = "caml_backpack_sendfile"
+external sendfile : file_descr -> file_descr -> int option -> int -> int = "caml_backpack_sendfile"
+
+type splice_flag =
+    | SPLICE_F_MOVE
+    | SPLICE_F_NONBLOCK
+    | SPLICE_F_MORE
+    | SPLICE_F_GIFT
+
+external splice : file_descr -> int option -> file_descr -> int option -> int -> splice_flag list -> int = "caml_backpack_splice_bytecode" "caml_backpack_splice_native"
 
 type sysinfo = {
     uptime    : int;

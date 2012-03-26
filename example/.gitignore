@@ -1,3 +1,4 @@
-mq.cm*
-mq.o
+*.cm*
+*.o
 mq
+cp
