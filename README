@@ -13,9 +13,45 @@ Small OCaml module that extends the standard library with:
 - New data structures:
 	+ Lazy lists
 - More functions from UNIX:
-	+ POSIX message queues
 	+ epoll
+	+ POSIX message queues
 	+ sync, fsync, fdatasync
-	+ flock
 	+ mkstemp, mkdtemp
 	+ asctime
+	+ sysconf, sysinfo
+	+ flock
+
+
+ Requirements
+--------------
+
+- OCaml
+- Findlib
+- Linux (this library is specific for Linux)
+
+
+ Installation
+--------------
+
+Just do:
+
+	make
+	make install
+
+And optionally:
+
+	make test
+	make doc
+	make uninstall
+
+
+ License
+---------
+
+MIT License.
+
+
+ Author
+--------
+
+Ricardo Catalinas Jiménez <jimenezrick@gmail.com>
