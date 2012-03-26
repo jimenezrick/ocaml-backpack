@@ -1,5 +1,5 @@
 - INI file parser
-- splice vs. sendfile, sysinfo, sysconf
+- splice vs. sendfile, sysconf
 - Multicast group join/leave: mcast_join, mcast_leave
 - Daemon mode, write PID file
 - SHA-256

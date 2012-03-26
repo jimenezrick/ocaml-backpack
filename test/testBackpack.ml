@@ -121,6 +121,10 @@ let () =
     Gc.full_major ()
 
 let () =
+    let info = Unix.sysinfo () in
+    assert (info.Unix.mem_unit = 1)
+
+let () =
     assert (Unix.is_regular "Makefile");
     assert (Unix.is_directory "src");
     Gc.full_major ()

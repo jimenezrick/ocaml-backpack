@@ -54,9 +54,17 @@ module Mqueue =
             | O_CREAT
             | O_EXCL
 
-        type attributes = {flags: flag list; maxmsg: int; msgsize: int; curmsgs: int}
+        type attributes = {
+            flags   : flag list;
+            maxmsg  : int;
+            msgsize : int;
+            curmsgs : int
+        }
 
-        type mq_attrs = {maxmsg_attr: int; msgsize_attr: int}
+        type mq_attrs = {
+            maxmsg_attr  : int;
+            msgsize_attr : int
+        }
 
         type open_attrs =
             | Mq_defs
@@ -112,6 +120,25 @@ type flock_op =
     | LOCK_UN
 
 external flock : file_descr -> flock_op list -> unit = "caml_backpack_flock"
+
+type sysinfo = {
+    uptime    : int;
+    load1     : int;
+    load5     : int;
+    load15    : int;
+    totalram  : int;
+    freeram   : int;
+    sharedram : int;
+    bufferram : int;
+    totalswap : int;
+    freeswap  : int;
+    procs     : int;
+    totalhigh : int;
+    freehigh  : int;
+    mem_unit  : int;
+}
+
+external sysinfo : unit -> sysinfo = "caml_backpack_sysinfo"
 
 let is_regular path = (stat path).st_kind = S_REG
 
