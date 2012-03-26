@@ -1,9 +1,12 @@
 .PHONY: all clean
 
-all: mq
+all: mq cp
 
 mq: mq.ml
 	ocamlfind ocamlopt -linkpkg -package backpack mq.ml -o mq
 
+cp: cp.ml
+	ocamlfind ocamlopt -linkpkg -package backpack cp.ml -o cp
+
 clean:
-	rm -f mq mq.o mq.cm*
+	rm -f mq cp *.o *.cm*
