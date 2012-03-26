@@ -27,11 +27,13 @@ module Epoll =
 
         type flag = EPOLL_CLOEXEC
 
-        external create1 : flag list -> epoll_descr = "caml_backpack_epoll_create1"
+        external create1 : flag list -> epoll_descr =
+            "caml_backpack_epoll_create1"
 
         let create () = create1 []
 
-        external ctl : epoll_descr -> operation -> file_descr -> event list -> unit = "caml_backpack_epoll_ctl"
+        external ctl : epoll_descr -> operation -> file_descr -> event list ->
+            unit = "caml_backpack_epoll_ctl"
 
         let add epfd fd events = ctl epfd EPOLL_CTL_ADD fd events
 
@@ -39,7 +41,8 @@ module Epoll =
 
         let del epfd fd = ctl epfd EPOLL_CTL_DEL fd []
 
-        external wait : epoll_descr -> int -> int -> (event list * file_descr) list = "caml_backpack_epoll_wait"
+        external wait : epoll_descr -> int -> int ->
+            (event list * file_descr) list = "caml_backpack_epoll_wait"
     end
 
 module Mqueue =
@@ -80,7 +83,8 @@ module Mqueue =
 
         external prio_max : unit -> priority = "caml_backpack_mq_prio_max"
 
-        external create_mq : string -> flag list -> file_perm -> open_attrs -> mqueue_descr = "caml_backpack_mq_open"
+        external create_mq : string -> flag list -> file_perm -> open_attrs ->
+            mqueue_descr = "caml_backpack_mq_open"
 
         let open_mq name flags = create_mq name flags 0 Mq_defs
 
@@ -88,17 +92,21 @@ module Mqueue =
 
         external unlink : string -> unit = "caml_backpack_mq_unlink"
 
-        external getattr : mqueue_descr -> attributes = "caml_backpack_mq_getattr"
+        external getattr : mqueue_descr -> attributes =
+            "caml_backpack_mq_getattr"
 
-        external setattr : mqueue_descr -> flag list -> unit = "caml_backpack_mq_setattr"
+        external setattr : mqueue_descr -> flag list -> unit =
+            "caml_backpack_mq_setattr"
 
         let set_nonblock mqfd = setattr mqfd [O_NONBLOCK]
 
         let clear_nonblock mqfd = setattr mqfd []
 
-        external send : mqueue_descr -> string -> int -> int -> priority -> unit = "caml_backpack_mq_send"
+        external send : mqueue_descr -> string -> int -> int -> priority ->
+            unit = "caml_backpack_mq_send"
 
-        external receive : mqueue_descr -> string -> int -> int -> int * priority = "caml_backpack_mq_receive"
+        external receive : mqueue_descr -> string -> int -> int ->
+            int * priority = "caml_backpack_mq_receive"
     end
 
 external asctime : tm -> string = "caml_backpack_asctime"
@@ -121,7 +129,8 @@ type flock_op =
 
 external flock : file_descr -> flock_op list -> unit = "caml_backpack_flock"
 
-external sendfile : file_descr -> file_descr -> int option -> int -> int = "caml_backpack_sendfile"
+external sendfile : file_descr -> file_descr -> int option -> int -> int =
+    "caml_backpack_sendfile"
 
 type splice_flag =
     | SPLICE_F_MOVE
@@ -129,7 +138,9 @@ type splice_flag =
     | SPLICE_F_MORE
     | SPLICE_F_GIFT
 
-external splice : file_descr -> int option -> file_descr -> int option -> int -> splice_flag list -> int = "caml_backpack_splice_bytecode" "caml_backpack_splice_native"
+external splice : file_descr -> int option -> file_descr -> int option ->
+    int -> splice_flag list -> int =
+        "caml_backpack_splice_bytecode" "caml_backpack_splice_native"
 
 type sysinfo = {
     uptime    : int;
