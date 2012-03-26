@@ -1,7 +1,89 @@
 - INI config file parser
 - Syslog
+- posix_fallocate, posix_fadvise
 - Multicast group join/leave: mcast_join, mcast_leave
 - Daemon mode, write PID file
 - SHA-256
 - Event loop
 - Some interesting data structure
+
+
+// #include "socketaddr.h" /////////////////////////////////////////////
+#include <caml/misc.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+union sock_addr_union {
+  struct sockaddr s_gen;
+  struct sockaddr_un s_unix;
+  struct sockaddr_in s_inet;
+#ifdef HAS_IPV6
+  struct sockaddr_in6 s_inet6;
+#endif
+};
+
+#ifdef HAS_SOCKLEN_T
+typedef socklen_t socklen_param_type;
+#else
+typedef int socklen_param_type;
+#endif
+
+extern void get_sockaddr (value mladdr,
+                          union sock_addr_union * addr /*out*/,
+                          socklen_param_type * addr_len /*out*/);
+CAMLexport value alloc_sockaddr (union sock_addr_union * addr /*in*/,
+                      socklen_param_type addr_len, int close_on_error);
+CAMLexport value alloc_inet_addr (struct in_addr * inaddr);
+#define GET_INET_ADDR(v) (*((struct in_addr *) (v)))
+
+#ifdef HAS_IPV6
+CAMLexport value alloc_inet6_addr (struct in6_addr * inaddr);
+#define GET_INET6_ADDR(v) (*((struct in6_addr *) (v)))
+#endif
+////////////////////////////////////////////////////////////////////////
+
+#define MK_MCAST(NAME, OP) \
+  CAMLprim value unix_mcast_##NAME(value v_ifname_opt, value v_fd, value v_sa) \
+  { \
+    int ret, fd = Int_val(v_fd); \
+    union sock_addr_union sau; \
+    struct sockaddr *sa = &sau.s_gen; \
+    socklen_param_type sa_len; \
+    get_sockaddr(v_sa, &sau, &sa_len); \
+    switch (sa->sa_family) { \
+      case AF_INET: { \
+        struct ip_mreq mreq; \
+        struct ifreq ifreq; \
+        memcpy(&mreq.imr_multiaddr, \
+               &((struct sockaddr_in *) sa)->sin_addr, \
+               sizeof(struct in_addr)); \
+        if (v_ifname_opt != Val_int(0)) { \
+          value v_ifname = Field(v_ifname_opt, 0); \
+          char *ifname = String_val(v_ifname); \
+          int ifname_len = caml_string_length(v_ifname) + 1; \
+          if (ifname_len > IFNAMSIZ) \
+            caml_failwith("mcast_" STR(NAME) ": ifname string too long"); \
+          strncpy(ifreq.ifr_name, ifname, IFNAMSIZ); \
+          if (ioctl(fd, SIOCGIFADDR, &ifreq) < 0) \
+            uerror("mcast_" STR(NAME), Nothing); \
+          memcpy(&mreq.imr_interface, \
+                 &((struct sockaddr_in *) &ifreq.ifr_addr)->sin_addr, \
+                 sizeof(struct in_addr)); \
+        } else mreq.imr_interface.s_addr = htonl(INADDR_ANY); \
+        ret = \
+          setsockopt(fd, IPPROTO_IP, IP_##OP##_MEMBERSHIP, \
+                     &mreq, sizeof(mreq)); \
+        if (ret == -1) uerror("mcast_" STR(NAME), Nothing); \
+        return Val_unit; \
+      } \
+      default : \
+        errno = EPROTONOSUPPORT; \
+        uerror("mcast_" STR(NAME), Nothing); \
+    } \
+  }
+
+MK_MCAST(join, ADD)
+MK_MCAST(leave, DROP)
