@@ -122,7 +122,12 @@ let () =
 
 let () =
     let info = Unix.sysinfo () in
-    assert (info.Unix.mem_unit = 1)
+    assert (info.Unix.mem_unit = 1);
+    Gc.full_major ()
+
+let () =
+    assert (Unix.sysconf Unix.PAGESIZE >= Int64.of_int 4096);
+    Gc.full_major ()
 
 let () =
     assert (Unix.is_regular "Makefile");

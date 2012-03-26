@@ -140,6 +140,28 @@ type sysinfo = {
 
 external sysinfo : unit -> sysinfo = "caml_backpack_sysinfo"
 
+type sysconf =
+    | ARG_MAX
+    | CHILD_MAX
+    | HOST_NAME_MAX
+    | LOGIN_NAME_MAX
+    | CLK_TCK
+    | OPEN_MAX
+    | PAGESIZE
+    | RE_DUP_MAX
+    | STREAM_MAX
+    | SYMLOOP_MAX
+    | TTY_NAME_MAX
+    | TZNAME_MAX
+    | VERSION
+    | LINE_MAX
+    | PHYS_PAGES
+    | AVPHYS_PAGES
+    | NPROCESSORS_CONF
+    | NPROCESSORS_ONLN
+
+external sysconf : sysconf -> int64 = "caml_backpack_sysconf"
+
 let is_regular path = (stat path).st_kind = S_REG
 
 let is_directory path = (stat path).st_kind = S_DIR
