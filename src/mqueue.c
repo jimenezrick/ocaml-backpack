@@ -37,8 +37,8 @@ caml_backpack_mq_open(value val_name, value val_flags, value val_mode, value val
 	if (Is_long(val_attr))
 		pattr = NULL;
 	else {
-		attr.mq_maxmsg  = Long_val(Field(val_attr, 0));
-		attr.mq_msgsize = Long_val(Field(val_attr, 1));
+		attr.mq_maxmsg  = Long_val(Field(Field(val_attr, 0), 0));
+		attr.mq_msgsize = Long_val(Field(Field(val_attr, 0), 1));
 		pattr           = &attr;
 	}
 

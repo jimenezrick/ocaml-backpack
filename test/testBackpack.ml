@@ -35,13 +35,13 @@ let () =
 
 let () =
     let open Unix.Mqueue in
-    let mq  = Unix.Mqueue.create_mq "/foo" [O_CREAT; O_RDWR] 0o666 Mq_defs in
-    let mq' = Unix.Mqueue.open_mq "/foo" [Unix.Mqueue.O_RDONLY] in
-    let flags, maxmsg, msgsize, curmsgs = Unix.Mqueue.getattr mq in
-    assert (flags = []);
-    assert (maxmsg = Unix.Mqueue.msg_max ());
-    assert (msgsize = Unix.Mqueue.msgsize_max ());
-    assert (curmsgs = 0);
+    let mq   = Unix.Mqueue.create_mq "/foo" [O_CREAT; O_RDWR] 0o666 Mq_defs in
+    let mq'  = Unix.Mqueue.open_mq "/foo" [Unix.Mqueue.O_RDONLY] in
+    let attr = Unix.Mqueue.getattr mq in
+    assert (attr.flags = []);
+    assert (attr.maxmsg = Unix.Mqueue.msg_max ());
+    assert (attr.msgsize = Unix.Mqueue.msgsize_max ());
+    assert (attr.curmsgs = 0);
     Unix.Mqueue.close mq';
     Unix.Mqueue.close mq;
     Unix.Mqueue.unlink "/foo";
@@ -49,13 +49,14 @@ let () =
 
 let () =
     let open Unix.Mqueue in
-    let mq  = Unix.Mqueue.create_mq "/foo" [O_CREAT; O_RDWR] 0o666 (Mq_attrs (10, 100)) in
-    let mq' = Unix.Mqueue.open_mq "/foo" [Unix.Mqueue.O_RDONLY] in
-    let flags, maxmsg, msgsize, curmsgs = Unix.Mqueue.getattr mq in
-    assert (flags = []);
-    assert (maxmsg = 10);
-    assert (msgsize = 100);
-    assert (curmsgs = 0);
+    let attr = {maxmsg_attr = 10; msgsize_attr = 100} in
+    let mq   = Unix.Mqueue.create_mq "/foo" [O_CREAT; O_RDWR] 0o666 (Mq_attrs attr) in
+    let mq'  = Unix.Mqueue.open_mq "/foo" [Unix.Mqueue.O_RDONLY] in
+    let attr = Unix.Mqueue.getattr mq in
+    assert (attr.flags = []);
+    assert (attr.maxmsg = 10);
+    assert (attr.msgsize = 100);
+    assert (attr.curmsgs = 0);
     Unix.Mqueue.close mq';
     Unix.Mqueue.close mq;
     Unix.Mqueue.unlink "/foo";

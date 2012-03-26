@@ -54,11 +54,15 @@ module Mqueue =
             | O_CREAT
             | O_EXCL
 
-        type attributes = flag list * int * int * int
+        type attributes = {flags: flag list; maxmsg: int; msgsize: int; curmsgs: int}
+
+        type mq_attrs = {maxmsg_attr: int; msgsize_attr: int}
 
         type open_attrs =
             | Mq_defs
-            | Mq_attrs of int * int
+            | Mq_attrs of mq_attrs
+
+        type priority = int
 
         let msg_max () = input_proc_int "/proc/sys/fs/mqueue/msg_max"
 
@@ -66,7 +70,7 @@ module Mqueue =
 
         let queues_max () = input_proc_int "/proc/sys/fs/mqueue/queues_max"
 
-        external prio_max : unit -> int = "caml_backpack_mq_prio_max"
+        external prio_max : unit -> priority = "caml_backpack_mq_prio_max"
 
         external create_mq : string -> flag list -> file_perm -> open_attrs -> mqueue_descr = "caml_backpack_mq_open"
 
@@ -84,9 +88,9 @@ module Mqueue =
 
         let clear_nonblock mqfd = setattr mqfd []
 
-        external send : mqueue_descr -> string -> int -> int -> int -> unit = "caml_backpack_mq_send"
+        external send : mqueue_descr -> string -> int -> int -> priority -> unit = "caml_backpack_mq_send"
 
-        external receive : mqueue_descr -> string -> int -> int -> int * int = "caml_backpack_mq_receive"
+        external receive : mqueue_descr -> string -> int -> int -> int * priority = "caml_backpack_mq_receive"
     end
 
 external asctime : tm -> string = "caml_backpack_asctime"
