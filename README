@@ -20,6 +20,7 @@ Small OCaml module that extends the standard library with:
 	+ asctime
 	+ sysconf, sysinfo
 	+ flock
+	+ sendfile
 
 
  Requirements

@@ -121,6 +121,8 @@ type flock_op =
 
 external flock : file_descr -> flock_op list -> unit = "caml_backpack_flock"
 
+external sendfile : file_descr -> file_descr -> int -> int -> int = "caml_backpack_sendfile"
+
 type sysinfo = {
     uptime    : int;
     load1     : int;
