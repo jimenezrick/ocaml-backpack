@@ -3,3 +3,4 @@
 tags
 _build/
 src/*.mli
+doc/

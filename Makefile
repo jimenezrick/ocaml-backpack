@@ -22,7 +22,7 @@ INSTALL_FILES =                  \
 	_build/libbackpack.a     \
 	_build/dllbackpack.so
 
-.PHONY: all test clean install uninstall $(MLIS) $(OBJS) $(LIB) $(TESTS)
+.PHONY: all test clean install uninstall doc $(MLIS) $(OBJS) $(LIB) $(TESTS)
 
 all: $(MLIS) $(LIB)
 	@cp _build/src/*.mli src
@@ -43,7 +43,7 @@ $(TESTS):
 
 clean:
 	@ocamlbuild $(OFLAGS) -clean
-	@rm -f src/*.mli
+	@rm -rf src/*.mli doc
 
 install: all
 	@strip _build/dll$(LIB).so
@@ -51,3 +51,7 @@ install: all
 
 uninstall:
 	@ocamlfind remove $(LIB)
+
+doc: all
+	@mkdir -p doc
+	@ocamldoc -html -d doc -I _build/src src/*.ml
