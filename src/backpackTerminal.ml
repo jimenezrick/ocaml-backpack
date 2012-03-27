@@ -38,6 +38,8 @@ let disable_echo () =
     let term = Unix.tcgetattr Unix.stdin in
     Unix.tcsetattr Unix.stdin Unix.TCSAFLUSH {term with Unix.c_echo = false}
 
+external term_size : unit -> int * int = "caml_backpack_term_size"
+
 let cur_up n = print_string (csi ^ string_of_int n ^ "A")
 
 let cur_down n = print_string (csi ^ string_of_int n ^ "B")

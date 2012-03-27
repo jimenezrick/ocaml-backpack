@@ -153,6 +153,13 @@ let () =
     let map' = IntMap.add 123 666 map in
     assert (IntMap.find 123 map' = 666)
 
+(* Terminal *)
+
+let () =
+    let row, col = Terminal.term_size () in
+    assert (row >= 1 && col >= 1);
+    Gc.full_major ()
+
 (* OptionMonad *)
 
 let () =
