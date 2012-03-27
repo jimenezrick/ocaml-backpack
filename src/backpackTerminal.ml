@@ -11,10 +11,8 @@ let rec read () =
 
 
 (* XXX: read_key, leer varios caracteres *)
-(* XXX: screen height and width *)
 
-
-
+let sigwinch = 28
 
 let esc = "\x1B"
 
