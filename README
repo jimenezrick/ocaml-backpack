@@ -9,6 +9,7 @@ I never leave home without it!
 
 Small OCaml module that extends the standard library with:
 
+- Terminal handling
 - Handy miscellaneous functions and operators
 - New data structures:
 	+ Lazy lists
