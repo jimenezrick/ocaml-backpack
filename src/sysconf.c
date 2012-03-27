@@ -31,6 +31,7 @@ caml_backpack_sysconf(value val_name)
 	CAMLlocal1(val_res);
 	long r;
 
+	errno = 0;
 	if ((r = sysconf(sysconf_names[Int_val(val_name)])) == -1 &&
 	    errno == EINVAL)
 		uerror("sysconf", Nothing);
