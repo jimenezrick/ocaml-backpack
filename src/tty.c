@@ -31,8 +31,8 @@ caml_backpack_term_size(value val_unit)
 		uerror("ioctl", Nothing);
 
 	val_res = caml_alloc_tuple(2);
-	Store_field(val_res, 0, size.ws_row);
-	Store_field(val_res, 1, size.ws_col);
+	Store_field(val_res, 0, Val_int(size.ws_row));
+	Store_field(val_res, 1, Val_int(size.ws_col));
 
 	CAMLreturn(val_res);
 }
