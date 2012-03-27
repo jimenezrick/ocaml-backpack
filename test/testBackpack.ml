@@ -139,6 +139,13 @@ let () =
     assert (Unix.is_directory "src");
     Gc.full_major ()
 
+(* Unix.Terminal *)
+
+let () =
+    let row, col = Unix.Terminal.term_size () in
+    assert (row >= 1 && col >= 1);
+    Gc.full_major ()
+
 (* StringMap *)
 
 let () =
@@ -152,13 +159,6 @@ let () =
     let map  = IntMap.empty in
     let map' = IntMap.add 123 666 map in
     assert (IntMap.find 123 map' = 666)
-
-(* Terminal *)
-
-let () =
-    let row, col = Terminal.term_size () in
-    assert (row >= 1 && col >= 1);
-    Gc.full_major ()
 
 (* OptionMonad *)
 

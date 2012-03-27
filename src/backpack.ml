@@ -3,13 +3,16 @@ let try_finalize f x finally y =
     finally y;
     res
 
-module Unix = BackpackUnix
+module Unix =
+    struct
+        include BackpackUnix
+
+        module Terminal = BackpackTerminal
+    end
 
 module StringMap = Map.Make (String)
 
 module IntMap = Map.Make (struct type t = int let compare = compare end)
-
-module Terminal = BackpackTerminal
 
 module OptionMonad =
     struct
