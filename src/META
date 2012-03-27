@@ -1,4 +1,4 @@
-version          = "0.1"
+version          = "0.2"
 description      = "Small OCaml module that extends the standard library"
 requires         = "str, unix"
 archive(byte)    = "backpack.cma"
