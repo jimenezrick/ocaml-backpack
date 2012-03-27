@@ -4,11 +4,6 @@ let rec read () =
     let n   = Unix.read Unix.stdin buf 0 (String.length buf) in
     Printf.printf "read %d\n%!" n;
     read ()
-
-let foooooooooooooo () =
-    let tio  = Unix.tcgetattr Unix.stdin in
-    Unix.tcsetattr Unix.stdin Unix.TCSANOW {tio with Unix.c_icanon = false; Unix.c_echo = false};
-    read ()
 (* XXX XXX XXX XXX XXX XXX XXX XXX XXX *)
 
 
@@ -17,9 +12,6 @@ let foooooooooooooo () =
 
 (* XXX: read_key, leer varios caracteres *)
 (* XXX: screen height and width *)
-(* XXX: Abstraer y poder guardar secuencias sin hacer print_string *)
-(* XXX: Disable canonical mode and echo, leer libro *)
-
 
 
 
@@ -28,25 +20,41 @@ let esc = "\x1B"
 
 let csi = esc ^ "["
 
-let flush () = flush stdout
+let flush () = flush stdout; Unix.tcdrain Unix.stdout
 
-let cursor_up n = print_string (csi ^ string_of_int n ^ "A")
+let canonical_mode () =
+    let term = Unix.tcgetattr Unix.stdin in
+    Unix.tcsetattr Unix.stdin Unix.TCSADRAIN {term with Unix.c_icanon = true}
 
-let cursor_down n = print_string (csi ^ string_of_int n ^ "B")
+let noncanonical_mode () =
+    let term = Unix.tcgetattr Unix.stdin in
+    Unix.tcsetattr Unix.stdin Unix.TCSADRAIN {term with Unix.c_icanon = false}
 
-let cursor_forward n = print_string (csi ^ string_of_int n ^ "C")
+let enable_echo () =
+    let term = Unix.tcgetattr Unix.stdin in
+    Unix.tcsetattr Unix.stdin Unix.TCSADRAIN {term with Unix.c_echo = true}
 
-let cursor_backward n = print_string (csi ^ string_of_int n ^ "D")
+let disable_echo () =
+    let term = Unix.tcgetattr Unix.stdin in
+    Unix.tcsetattr Unix.stdin Unix.TCSAFLUSH {term with Unix.c_echo = false}
 
-let cursor_next_line n = print_string (csi ^ string_of_int n ^ "E")
+let cur_up n = print_string (csi ^ string_of_int n ^ "A")
 
-let cursor_previous_line n = print_string (csi ^ string_of_int n ^ "F")
+let cur_down n = print_string (csi ^ string_of_int n ^ "B")
 
-let cursor_line n = print_string (csi ^ string_of_int n ^ "H")
+let cur_forward n = print_string (csi ^ string_of_int n ^ "C")
 
-let cursor_column n = print_string (csi ^ string_of_int n ^ "G")
+let cur_backward n = print_string (csi ^ string_of_int n ^ "D")
 
-let cursor_position row col =
+let cur_next_line n = print_string (csi ^ string_of_int n ^ "E")
+
+let cur_prev_line n = print_string (csi ^ string_of_int n ^ "F")
+
+let cur_line n = print_string (csi ^ string_of_int n ^ "H")
+
+let cur_col n = print_string (csi ^ string_of_int n ^ "G")
+
+let cur_pos row col =
     print_string (csi ^ string_of_int row ^ ";" ^ string_of_int col ^ "H")
 
 type screen_erase =
@@ -89,7 +97,7 @@ type color =
     | Cyan
     | White
 
-type text_attribute =
+type text_attr =
     | Normal
     | Bold
     | Italic
@@ -116,7 +124,7 @@ let color_num = function
     | Cyan    -> (36, 46)
     | White   -> (37, 47)
 
-let set_text_attributes attrs =
+let set_text_attrs attrs =
     let conv =
         function
             | Normal                   -> 0
@@ -137,10 +145,10 @@ let set_text_attributes attrs =
     in let map = List.map (fun x -> string_of_int (conv x)) in
     print_string (csi ^ String.concat ";" (map attrs) ^ "m")
 
-let save_cursor_position () = print_string (csi ^ "s")
+let save_cur_pos () = print_string (csi ^ "s")
 
-let restore_cursor_position () = print_string (csi ^ "u")
+let restore_cur_pos () = print_string (csi ^ "u")
 
-let hide_cursor () = print_string (csi ^ "?25l")
+let hide_cur () = print_string (csi ^ "?25l")
 
-let show_cursor () = print_string (csi ^ "?25h")
+let show_cur () = print_string (csi ^ "?25h")

@@ -183,6 +183,8 @@ type sysconf =
 
 external sysconf : sysconf -> int64 = "caml_backpack_sysconf"
 
+external ttyname : file_descr -> string = "caml_backpack_ttyname"
+
 let is_regular path = (stat path).st_kind = S_REG
 
 let is_directory path = (stat path).st_kind = S_DIR

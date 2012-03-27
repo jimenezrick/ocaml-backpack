@@ -130,6 +130,11 @@ let () =
     Gc.full_major ()
 
 let () =
+    match String.split ["/"] (Unix.ttyname Unix.stdin) with
+    | "dev" :: _ -> Gc.full_major ()
+    | _          -> assert false
+
+let () =
     assert (Unix.is_regular "Makefile");
     assert (Unix.is_directory "src");
     Gc.full_major ()
