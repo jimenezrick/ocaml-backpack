@@ -6,6 +6,8 @@ let csi = esc ^ "["
 
 let flush () = flush stdout; Unix.tcdrain Unix.stdout
 
+let beep () = print_string "\x07"; flush ()
+
 let canonical_mode () =
     let term = Unix.tcgetattr Unix.stdout in
     Unix.tcsetattr Unix.stdout Unix.TCSADRAIN {term with Unix.c_icanon = true}

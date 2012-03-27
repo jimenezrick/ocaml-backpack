@@ -11,6 +11,7 @@ let rec run () =
     Unix.Terminal.cur_pos 2 1;
     Unix.Terminal.erase_line Unix.Terminal.Erase_entire_line;
     Printf.printf "Read: %s (%d)%!" key (String.length key);
+    Unix.Terminal.beep ();
     run ()
 
 let () =
