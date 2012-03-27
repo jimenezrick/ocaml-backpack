@@ -21,28 +21,11 @@ let flush () = flush stdout; Unix.tcdrain Unix.stdout
 
 let beep () = print_string "\x07"; flush ()
 
-let normal_term =
-    try Some (Unix.tcgetattr Unix.stdin) with
-    | Unix.Unix_error (Unix.ENOTTY, _, _) -> None
-    | Unix.Unix_error (Unix.EBADF, _, _)  -> None
+external term_size : unit -> int * int = "caml_backpack_term_size"
 
-let canonical_mode () =
-    match normal_term with
-    | None      -> failwith "Not in a tty"
-    | Some term -> Unix.tcsetattr Unix.stdin Unix.TCSADRAIN term
+external canonical_mode : unit -> unit = "caml_backpack_canonical_mode"
 
-let raw_mode () =
-    let open Unix in
-    match normal_term with
-    | None      -> failwith "Not in a tty"
-    | Some term ->
-            Unix.tcsetattr Unix.stdin Unix.TCSAFLUSH
-            {term with
-                c_icanon = false; c_isig = false; c_echo = false;
-                c_brkint = false; c_icrnl = false; c_ignbrk = true; c_igncr = true;
-                c_inlcr = false; c_inpck = true; c_istrip = true; c_ixon = false;
-                c_parmrk = true; c_opost = false;
-                c_vmin = 1; c_vtime = 0}
+external raw_mode : unit -> unit = "caml_backpack_raw_mode"
 
 let enable_echo () =
     let term = Unix.tcgetattr Unix.stdin in
@@ -76,8 +59,6 @@ let read_key () =
                     | _        -> failwith "Fuckme too!" (* XXX *)
                 end
     | c -> Char c
-
-external term_size : unit -> int * int = "caml_backpack_term_size"
 
 let cur_up n = print_string (csi ^ string_of_int n ^ "A")
 

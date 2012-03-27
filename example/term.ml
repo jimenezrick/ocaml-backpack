@@ -17,6 +17,7 @@ let string_of_key = function
     | Unix.Terminal.Arrow_backward -> "Arrow_backward"
     | Unix.Terminal.Home           -> "Home"
     | Unix.Terminal.End            -> "End"
+    | Unix.Terminal.Char 'q'       -> exit 0
     | Unix.Terminal.Char c         -> String.make 1 c
 
 let rec run () =
@@ -35,7 +36,8 @@ let rec run () =
     run ()
 
 let () =
-    Sys.set_signal Unix.Terminal.sigwinch (Sys.Signal_handle print_term_size);
+    at_exit Unix.Terminal.canonical_mode;
     Unix.Terminal.raw_mode ();
+    Sys.set_signal Unix.Terminal.sigwinch (Sys.Signal_handle print_term_size);
     print_term_size 0;
     run ()

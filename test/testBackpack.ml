@@ -147,8 +147,10 @@ let () =
     Gc.full_major ()
 
 let () =
+    Unix.Terminal.canonical_mode ();
     Unix.Terminal.raw_mode ();
-    Unix.Terminal.canonical_mode ()
+    Unix.Terminal.canonical_mode ();
+    Gc.full_major ()
 
 (* StringMap *)
 
