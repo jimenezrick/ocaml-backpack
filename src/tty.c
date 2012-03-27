@@ -27,7 +27,7 @@ caml_backpack_term_size(value val_unit)
 	CAMLlocal1(val_res);
 	struct winsize size;
 
-	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == -1)
+	if (ioctl(STDIN_FILENO, TIOCGWINSZ, &size) == -1)
 		uerror("ioctl", Nothing);
 
 	val_res = caml_alloc_tuple(2);

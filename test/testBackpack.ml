@@ -146,6 +146,10 @@ let () =
     assert (row >= 1 && col >= 1);
     Gc.full_major ()
 
+let () =
+    Unix.Terminal.raw_mode ();
+    Unix.Terminal.canonical_mode ()
+
 (* StringMap *)
 
 let () =

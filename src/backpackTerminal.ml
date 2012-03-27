@@ -1,33 +1,81 @@
+type key =
+    | Eot
+    | Bs
+    | Esc
+    | Enter
+    | Arrow_up
+    | Arrow_down
+    | Arrow_forward
+    | Arrow_backward
+    | Home
+    | End
+    | Char of char
+
 let sigwinch = 28
 
-let esc = "\x1B"
+let esc = '\x1B'
 
-let csi = esc ^ "["
+let csi = String.make 1 esc ^ "["
 
 let flush () = flush stdout; Unix.tcdrain Unix.stdout
 
 let beep () = print_string "\x07"; flush ()
 
-let canonical_mode () =
-    let term = Unix.tcgetattr Unix.stdout in
-    Unix.tcsetattr Unix.stdout Unix.TCSADRAIN {term with Unix.c_icanon = true}
+let normal_term =
+    try Some (Unix.tcgetattr Unix.stdin) with
+    | Unix.Unix_error (Unix.ENOTTY, _, _) -> None
+    | Unix.Unix_error (Unix.EBADF, _, _)  -> None
 
-let noncanonical_mode () =
-    let term = Unix.tcgetattr Unix.stdout in
-    Unix.tcsetattr Unix.stdout Unix.TCSADRAIN {term with Unix.c_icanon = false}
+let canonical_mode () =
+    match normal_term with
+    | None      -> failwith "Not in a tty"
+    | Some term -> Unix.tcsetattr Unix.stdin Unix.TCSADRAIN term
+
+let raw_mode () =
+    let open Unix in
+    match normal_term with
+    | None      -> failwith "Not in a tty"
+    | Some term ->
+            Unix.tcsetattr Unix.stdin Unix.TCSAFLUSH
+            {term with
+                c_icanon = false; c_isig = false; c_echo = false;
+                c_brkint = false; c_icrnl = false; c_ignbrk = true; c_igncr = true;
+                c_inlcr = false; c_inpck = true; c_istrip = true; c_ixon = false;
+                c_parmrk = true; c_opost = false;
+                c_vmin = 1; c_vtime = 0}
 
 let enable_echo () =
-    let term = Unix.tcgetattr Unix.stdout in
-    Unix.tcsetattr Unix.stdout Unix.TCSADRAIN {term with Unix.c_echo = true}
+    let term = Unix.tcgetattr Unix.stdin in
+    Unix.tcsetattr Unix.stdin Unix.TCSADRAIN {term with Unix.c_echo = true}
 
 let disable_echo () =
-    let term = Unix.tcgetattr Unix.stdout in
-    Unix.tcsetattr Unix.stdout Unix.TCSAFLUSH {term with Unix.c_echo = false}
+    let term = Unix.tcgetattr Unix.stdin in
+    Unix.tcsetattr Unix.stdin Unix.TCSAFLUSH {term with Unix.c_echo = false}
 
 let read_key () =
-    let buf = String.create 64 in
-    let n   = Unix.read Unix.stdin buf 0 (String.length buf) in
-    String.sub buf 0 n
+    let buf = String.create 1 in
+    ignore (Unix.read Unix.stdin buf 0 1);
+    match buf.[0] with
+    | '\x04'         -> Eot
+    | '\x7F'         -> Bs
+    | '\x1B'         -> Esc
+    | '\x0D'         -> Enter
+    | c when c = esc ->
+            let buf = String.create 2 in
+            let n   = Unix.read Unix.stdin buf 0 2 in
+            if n = 1 then failwith "Fuck!" (* XXX *)
+            else
+                begin
+                    match buf.[0], buf.[1] with
+                    | '[', 'A' -> Arrow_up
+                    | '[', 'B' -> Arrow_down
+                    | '[', 'C' -> Arrow_forward
+                    | '[', 'D' -> Arrow_backward
+                    | '[', 'H' -> Home
+                    | '[', 'F' -> End
+                    | _        -> failwith "Fuckme too!" (* XXX *)
+                end
+    | c -> Char c
 
 external term_size : unit -> int * int = "caml_backpack_term_size"
 
