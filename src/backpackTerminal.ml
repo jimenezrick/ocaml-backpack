@@ -1,14 +1,18 @@
 type key =
     | Eot
     | Bs
+    | Del
     | Esc
     | Enter
-    | Arrow_up
-    | Arrow_down
-    | Arrow_forward
-    | Arrow_backward
+    | Up
+    | Down
+    | Forward
+    | Backward
+    | Pg_up
+    | Pg_down
     | Home
     | End
+    | Fn of int
     | Char of char
 
 let sigwinch = 28
@@ -41,23 +45,46 @@ let read_key () =
     match buf.[0] with
     | '\x04'         -> Eot
     | '\x7F'         -> Bs
-    | '\x1B'         -> Esc
+    (*| '\x1B'         -> Esc (* FIXME FIXME FIMXE *)*)
     | '\x0D'         -> Enter
     | c when c = esc ->
-            let buf = String.create 2 in
-            let n   = Unix.read Unix.stdin buf 0 2 in
-            if n = 1 then failwith "Fuck!" (* XXX *)
-            else
+            let buf = String.create 4 in
+            let n   = Unix.read Unix.stdin buf 0 4 in
+
+            if n = 0 then failwith "ESC!?!?!?" else
+
+            if n = 1 then
+                failwith "Fuck!" (* XXX *)
+            else if n = 2 then
                 begin
                     match buf.[0], buf.[1] with
-                    | '[', 'A' -> Arrow_up
-                    | '[', 'B' -> Arrow_down
-                    | '[', 'C' -> Arrow_forward
-                    | '[', 'D' -> Arrow_backward
-                    | '[', 'H' -> Home
-                    | '[', 'F' -> End
-                    | _        -> failwith "Fuckme too!" (* XXX *)
+                    | '[', 'A' -> Up
+                    | '[', 'B' -> Down
+                    | '[', 'C' -> Forward
+                    | '[', 'D' -> Backward
+                    | _        -> failwith "Fuckme too! 1" (* XXX *)
                 end
+            else if n = 3 then
+                begin
+                    match buf.[0], buf.[1], buf.[2] with
+                    | '[', '3', '~' -> Del
+                    | '[', '5', '~' -> Pg_up
+                    | '[', '6', '~' -> Pg_down
+                    | '[', '7', '~' -> Home
+                    | '[', '8', '~' -> End
+                    | '[', n1, n2   -> Printf.printf "-- %c - %c %!" n1 n2; failwith "SUCK!"
+                    | _             -> failwith "Fuckme too! 2" (* XXX *)
+                end
+
+            else if n = 4 then
+                begin
+                    match buf.[0], buf.[1], buf.[2], buf.[3] with
+                    | '[', '1', '7', '~' -> Fn 6
+                    | '[', '1', '8', '~' -> Fn 7
+                    | _                  -> failwith "Fuckme too! 3" (* XXX *)
+                end
+            else
+                failwith "Fuckme too!" (* XXX *)
     | c -> Char c
 
 let cur_up n = print_string (csi ^ string_of_int n ^ "A")

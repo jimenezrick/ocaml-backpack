@@ -9,14 +9,23 @@ let print_term_size _ =
 let string_of_key = function
     | Unix.Terminal.Eot            -> "Eot"
     | Unix.Terminal.Bs             -> "Bs"
+    | Unix.Terminal.Del     -> "Del"
     | Unix.Terminal.Esc            -> "Esc"
     | Unix.Terminal.Enter          -> "Enter"
-    | Unix.Terminal.Arrow_up       -> "Arrow_up"
-    | Unix.Terminal.Arrow_down     -> "Arrow_down"
-    | Unix.Terminal.Arrow_forward  -> "Arrow_forward"
-    | Unix.Terminal.Arrow_backward -> "Arrow_backward"
+    | Unix.Terminal.Up       -> "Up"
+    | Unix.Terminal.Down     -> "Down"
+    | Unix.Terminal.Forward  -> "Forward"
+    | Unix.Terminal.Backward -> "Backward"
+    | Unix.Terminal.Pg_up    -> "Pg_up"
+    | Unix.Terminal.Pg_down  -> "Pg_down"
+
     | Unix.Terminal.Home           -> "Home"
     | Unix.Terminal.End            -> "End"
+
+    | Unix.Terminal.Fn 6     -> "Fun 6"
+    | Unix.Terminal.Fn 7     -> "Fun 7"
+    | Unix.Terminal.Fn _     -> "Fn X"
+
     | Unix.Terminal.Char 'q'       -> exit 0
     | Unix.Terminal.Char c         -> String.make 1 c
 
