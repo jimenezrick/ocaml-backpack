@@ -7,27 +7,23 @@ let print_term_size _ =
     Printf.printf "Terminal size: %dx%d%!" row col
 
 let string_of_key = function
-    | Unix.Terminal.Eot            -> "Eot"
-    | Unix.Terminal.Bs             -> "Bs"
-    | Unix.Terminal.Del     -> "Del"
-    | Unix.Terminal.Esc            -> "Esc"
-    | Unix.Terminal.Enter          -> "Enter"
-    | Unix.Terminal.Up       -> "Up"
-    | Unix.Terminal.Down     -> "Down"
-    | Unix.Terminal.Forward  -> "Forward"
-    | Unix.Terminal.Backward -> "Backward"
-    | Unix.Terminal.Pg_up    -> "Pg_up"
-    | Unix.Terminal.Pg_down  -> "Pg_down"
-
-    | Unix.Terminal.Home           -> "Home"
-    | Unix.Terminal.End            -> "End"
-
-    | Unix.Terminal.Fn 6     -> "Fun 6"
-    | Unix.Terminal.Fn 7     -> "Fun 7"
-    | Unix.Terminal.Fn _     -> "Fn X"
-
-    | Unix.Terminal.Char 'q'       -> exit 0
-    | Unix.Terminal.Char c         -> String.make 1 c
+    | Unix.Terminal.Eot         -> "Eot"
+    | Unix.Terminal.Bs          -> "Bs"
+    | Unix.Terminal.Del         -> "Del"
+    | Unix.Terminal.Esc         -> "Esc"
+    | Unix.Terminal.Enter       -> "Enter"
+    | Unix.Terminal.Up          -> "Up"
+    | Unix.Terminal.Down        -> "Down"
+    | Unix.Terminal.Forward     -> "Forward"
+    | Unix.Terminal.Backward    -> "Backward"
+    | Unix.Terminal.Pg_up       -> "Pg_up"
+    | Unix.Terminal.Pg_down     -> "Pg_down"
+    | Unix.Terminal.Home        -> "Home"
+    | Unix.Terminal.End         -> "End"
+    | Unix.Terminal.Fn n        -> "Fn " ^ string_of_int n
+    | Unix.Terminal.Char 'q'    -> exit 0
+    | Unix.Terminal.Char c      -> String.make 1 c
+    | Unix.Terminal.Unknown_seq -> "Unknown_seq"
 
 let rec run () =
     let key = Unix.restart_on_EINTR Unix.Terminal.read_key () in

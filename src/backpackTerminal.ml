@@ -14,6 +14,7 @@ type key =
     | End
     | Fn of int
     | Char of char
+    | Unknown_seq
 
 let sigwinch = 28
 
@@ -39,52 +40,55 @@ let disable_echo () =
     let term = Unix.tcgetattr Unix.stdin in
     Unix.tcsetattr Unix.stdin Unix.TCSAFLUSH {term with Unix.c_echo = false}
 
+let match_esc_seq3 buf =
+    match buf.[1], buf.[2] with
+    | '[', 'A' -> Up
+    | '[', 'B' -> Down
+    | '[', 'C' -> Forward
+    | '[', 'D' -> Backward
+    | _        -> Unknown_seq
+
+let match_esc_seq4 buf =
+    match buf.[1], buf.[2], buf.[3] with
+    | '[', '3', '~' -> Del
+    | '[', '5', '~' -> Pg_up
+    | '[', '6', '~' -> Pg_down
+    | '[', '7', '~' -> Home
+    | '[', '8', '~' -> End
+    | _             -> Unknown_seq
+
+let match_esc_seq5 buf =
+    match buf.[1], buf.[2], buf.[3], buf.[4] with
+    | '[', '1', '1', '~' -> Fn  1
+    | '[', '1', '2', '~' -> Fn  2
+    | '[', '1', '3', '~' -> Fn  3
+    | '[', '1', '4', '~' -> Fn  4
+    | '[', '1', '5', '~' -> Fn  5
+    | '[', '1', '7', '~' -> Fn  6
+    | '[', '1', '8', '~' -> Fn  7
+    | '[', '1', '9', '~' -> Fn  8
+    | '[', '2', '0', '~' -> Fn  9
+    | '[', '2', '1', '~' -> Fn 10
+    | '[', '2', '3', '~' -> Fn 11
+    | '[', '2', '4', '~' -> Fn 12
+    | _                  -> Unknown_seq
+
 let read_key () =
-    let buf = String.create 1 in
-    ignore (Unix.read Unix.stdin buf 0 1);
+    let buf = String.create 5 in
+    let len = Unix.read Unix.stdin buf 0 (String.length buf) in
     match buf.[0] with
     | '\x04'         -> Eot
     | '\x7F'         -> Bs
-    (*| '\x1B'         -> Esc (* FIXME FIXME FIMXE *)*)
     | '\x0D'         -> Enter
     | c when c = esc ->
-            let buf = String.create 4 in
-            let n   = Unix.read Unix.stdin buf 0 4 in
-
-            if n = 0 then failwith "ESC!?!?!?" else
-
-            if n = 1 then
-                failwith "Fuck!" (* XXX *)
-            else if n = 2 then
-                begin
-                    match buf.[0], buf.[1] with
-                    | '[', 'A' -> Up
-                    | '[', 'B' -> Down
-                    | '[', 'C' -> Forward
-                    | '[', 'D' -> Backward
-                    | _        -> failwith "Fuckme too! 1" (* XXX *)
-                end
-            else if n = 3 then
-                begin
-                    match buf.[0], buf.[1], buf.[2] with
-                    | '[', '3', '~' -> Del
-                    | '[', '5', '~' -> Pg_up
-                    | '[', '6', '~' -> Pg_down
-                    | '[', '7', '~' -> Home
-                    | '[', '8', '~' -> End
-                    | '[', n1, n2   -> Printf.printf "-- %c - %c %!" n1 n2; failwith "SUCK!"
-                    | _             -> failwith "Fuckme too! 2" (* XXX *)
-                end
-
-            else if n = 4 then
-                begin
-                    match buf.[0], buf.[1], buf.[2], buf.[3] with
-                    | '[', '1', '7', '~' -> Fn 6
-                    | '[', '1', '8', '~' -> Fn 7
-                    | _                  -> failwith "Fuckme too! 3" (* XXX *)
-                end
-            else
-                failwith "Fuckme too!" (* XXX *)
+            begin
+                match len with
+                | 1 -> Esc
+                | 3 -> match_esc_seq3 buf
+                | 4 -> match_esc_seq4 buf
+                | 5 -> match_esc_seq5 buf
+                | _ -> Unknown_seq
+            end
     | c -> Char c
 
 let cur_up n = print_string (csi ^ string_of_int n ^ "A")
