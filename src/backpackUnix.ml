@@ -1,5 +1,9 @@
 include Unix
 
+let rec restart_on_EINTR f x =
+    try f x
+    with Unix_error (EINTR, _, _) -> restart_on_EINTR f x
+
 let input_proc_int path =
     let chan = open_in path in
     let line = input_line chan in
@@ -188,7 +192,3 @@ external ttyname : file_descr -> string = "caml_backpack_ttyname"
 let is_regular path = (stat path).st_kind = S_REG
 
 let is_directory path = (stat path).st_kind = S_DIR
-
-let rec restart_on_EINTR f x =
-    try f x
-    with Unix_error (EINTR, _, _) -> restart_on_EINTR f x

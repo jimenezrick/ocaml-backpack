@@ -1,17 +1,3 @@
-(* XXX XXX XXX XXX XXX XXX XXX XXX XXX *)
-let rec read () =
-    let buf = String.create 128 in
-    let n   = Unix.read Unix.stdin buf 0 (String.length buf) in
-    Printf.printf "read %d\n%!" n;
-    read ()
-(* XXX XXX XXX XXX XXX XXX XXX XXX XXX *)
-
-
-
-
-
-(* XXX: read_key, leer varios caracteres *)
-
 let sigwinch = 28
 
 let esc = "\x1B"
@@ -21,20 +7,25 @@ let csi = esc ^ "["
 let flush () = flush stdout; Unix.tcdrain Unix.stdout
 
 let canonical_mode () =
-    let term = Unix.tcgetattr Unix.stdin in
-    Unix.tcsetattr Unix.stdin Unix.TCSADRAIN {term with Unix.c_icanon = true}
+    let term = Unix.tcgetattr Unix.stdout in
+    Unix.tcsetattr Unix.stdout Unix.TCSADRAIN {term with Unix.c_icanon = true}
 
 let noncanonical_mode () =
-    let term = Unix.tcgetattr Unix.stdin in
-    Unix.tcsetattr Unix.stdin Unix.TCSADRAIN {term with Unix.c_icanon = false}
+    let term = Unix.tcgetattr Unix.stdout in
+    Unix.tcsetattr Unix.stdout Unix.TCSADRAIN {term with Unix.c_icanon = false}
 
 let enable_echo () =
-    let term = Unix.tcgetattr Unix.stdin in
-    Unix.tcsetattr Unix.stdin Unix.TCSADRAIN {term with Unix.c_echo = true}
+    let term = Unix.tcgetattr Unix.stdout in
+    Unix.tcsetattr Unix.stdout Unix.TCSADRAIN {term with Unix.c_echo = true}
 
 let disable_echo () =
-    let term = Unix.tcgetattr Unix.stdin in
-    Unix.tcsetattr Unix.stdin Unix.TCSAFLUSH {term with Unix.c_echo = false}
+    let term = Unix.tcgetattr Unix.stdout in
+    Unix.tcsetattr Unix.stdout Unix.TCSAFLUSH {term with Unix.c_echo = false}
+
+let read_key () =
+    let buf = String.create 64 in
+    let n   = Unix.read Unix.stdin buf 0 (String.length buf) in
+    String.sub buf 0 n
 
 external term_size : unit -> int * int = "caml_backpack_term_size"
 
