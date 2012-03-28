@@ -233,6 +233,14 @@ let () =
         assert (String.implode ['a'; 'b'; 'c'] = "abc")
     end
 
+let () =
+    let ( + ) a b = char_of_int (int_of_char a + int_of_char b) in
+    let s         = "123" in
+    let s'        = String.map ((+) (char_of_int 1)) s in
+    assert (s  = "123");
+    assert (s' = "234");
+    assert (s != s')
+
 (* LazyList *)
 
 let () =

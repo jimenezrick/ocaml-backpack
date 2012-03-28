@@ -109,6 +109,14 @@ module String =
                 | [] -> res
                 | c :: l -> res.[i] <- c; implode' (i + 1) l
             in implode' 0 l
+
+        let map f s =
+            let s' = String.copy s in
+            for i = 0 to (String.length s' - 1)
+            do
+                s'.[i] <- f s.[i]
+            done;
+            s'
     end
 
 module LazyList =
