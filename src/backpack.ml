@@ -1,7 +1,8 @@
-let try_finalize f x finally y =
-    let res = try f x with ex -> finally y; raise ex in
-    finally y;
-    res
+let finally h f x =
+    let r =
+        try f x
+        with e -> h (); raise e
+    in h (); r
 
 module Int =
     struct
@@ -47,12 +48,14 @@ module Op =
     struct
         let id x = x
 
+        let flip f x y = f y x
+
         (* Function composition operator *)
         let ( |. ) f g = fun x -> f (g x)
 
-        let ( |.| ) f g = fun x y -> (f x, g y)
+        let ( |.| ) f g = fun (x, y) -> (f x, g y)
 
-        let ( |..| ) f g = fun (x, y) -> (f x, g y)
+        let ( |..| ) f g = fun x y -> (f x, g y)
 
         (* Reduce function application precedence operator *)
         let ( @@ ) f x = f x
