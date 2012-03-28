@@ -31,7 +31,7 @@
  * SUCH DAMAGE.
  */
 
-#if 0
+#if 1
 #define UNROLL_LOOPS /* Enable loops unrolling */
 #endif
 
