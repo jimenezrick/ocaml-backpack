@@ -11,6 +11,7 @@ Small OCaml module that extends the standard library with:
 
 - Terminal handling
 - Handy miscellaneous functions and operators
+- Pretty-printing lists, arrays and tuples
 - New data structures:
 	+ Lazy lists
 - More functions from UNIX:

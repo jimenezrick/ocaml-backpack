@@ -159,6 +159,20 @@ let () =
     let map' = StringMap.add "foo" "bar" map in
     assert (StringMap.find "foo" map' = "bar")
 
+(* Pretty *)
+
+let () =
+    let s = String.create 3 in
+    s.[0] <- char_of_int   1;
+    s.[1] <- char_of_int  10;
+    s.[2] <- char_of_int 255;
+    assert (Pretty.hex_of_string s = "010aff")
+
+let () =
+    assert (Pretty.string_of_tuple2 string_of_int string_of_int (1, 2) = "(1, 2)");
+    assert (Pretty.string_of_list string_of_int [1; 2; 3] = "[1; 2; 3]");
+    assert (Pretty.string_of_array string_of_int [|1; 2; 3|] = "[|1; 2; 3|]")
+
 (* IntMap *)
 
 let () =
