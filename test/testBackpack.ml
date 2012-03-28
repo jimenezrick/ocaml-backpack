@@ -173,6 +173,18 @@ let () =
     assert (Pretty.string_of_list string_of_int [1; 2; 3] = "[1; 2; 3]");
     assert (Pretty.string_of_array string_of_int [|1; 2; 3|] = "[|1; 2; 3|]")
 
+(* Digest *)
+
+let () =
+    let s1 = "123" in
+    let s2 = "456" in
+    let s3 = s1 ^ s2 in
+    assert (Digest.crc32 s1 = Int64.to_int32 2286445522L);
+    assert (Digest.crc32 s2 = Int64.to_int32 2980627313L);
+    assert (Digest.crc32 s3 = Int64.to_int32 158520161L);
+    assert (Digest.crc32_update (Digest.crc32 s1) s2 = Digest.crc32 s3);
+    Gc.full_major ()
+
 (* IntMap *)
 
 let () =

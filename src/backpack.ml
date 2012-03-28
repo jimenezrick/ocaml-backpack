@@ -20,6 +20,8 @@ module StringSet = Set.Make (String)
 
 module Pretty = BackpackPretty
 
+module Digest = BackpackDigest
+
 module Unix =
     struct
         include BackpackUnix

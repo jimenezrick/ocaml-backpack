@@ -14,6 +14,8 @@ Small OCaml module that extends the standard library with:
 - Pretty-printing lists, arrays and tuples
 - New data structures:
 	+ Lazy lists
+- Additional digest algorithms:
+	+ CRC32
 - More functions from UNIX:
 	+ epoll
 	+ POSIX message queues
