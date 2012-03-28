@@ -16,6 +16,7 @@ Small OCaml module that extends the standard library with:
 	+ Lazy lists
 - Additional digest algorithms:
 	+ CRC32
+	+ SHA-256
 - More functions from UNIX:
 	+ epoll
 	+ POSIX message queues

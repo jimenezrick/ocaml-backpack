@@ -185,6 +185,12 @@ let () =
     assert (Digest.crc32_update (Digest.crc32 s1) s2 = Digest.crc32 s3);
     Gc.full_major ()
 
+let () =
+    let h  = Digest.sha256 "123" in
+    let h' = "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3" in
+    assert (Pretty.hex_of_string h = h');
+    Gc.full_major ()
+
 (* IntMap *)
 
 let () =

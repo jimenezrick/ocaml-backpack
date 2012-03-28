@@ -1,6 +1,6 @@
 - INI config file parser
-- SHA-2 http://www.ouah.org/ogay/sha2/
 - Binary
+- sha256_init, sha256_update, sha256_final
 
 
 - Terminal widgets
