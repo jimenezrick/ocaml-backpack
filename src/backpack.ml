@@ -77,4 +77,14 @@ module Char =
 
 module String = BackpackString
 
+module List =
+    struct
+        include List
+
+        let rec remove x = function
+            | []                -> []
+            | h :: t when h = x -> t
+            | h :: t            -> h :: remove x t
+    end
+
 module LazyList = BackpackLazyList

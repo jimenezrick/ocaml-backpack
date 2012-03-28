@@ -273,6 +273,14 @@ let () =
     assert (s' = "234");
     assert (s != s')
 
+(* List *)
+
+let () =
+    let l = [1; 2; 3; 4; 3; 5] in
+    assert (List.remove 6 [] = []);
+    assert (List.remove 3 l = [1; 2; 4; 3; 5]);
+    assert (List.remove 6 l = l)
+
 (* LazyList *)
 
 let () =
