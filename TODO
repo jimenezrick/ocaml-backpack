@@ -1,12 +1,18 @@
 - INI config file parser
-- Syslog
+- SHA-2 http://www.ouah.org/ogay/sha2/
+- Binary
+
+
+- Terminal widgets
+- syslog
 - posix_fallocate, posix_fadvise
 - Multicast group join/leave: mcast_join, mcast_leave
 - Daemon mode, write PID file
-- SHA-256
 - Event loop
 - Some interesting data structure
 
+
+* Multicast snippet:
 
 // #include "socketaddr.h" /////////////////////////////////////////////
 #include <caml/misc.h>
