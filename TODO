@@ -1,8 +1,5 @@
 - INI config file parser
-- Binary
-- sha256_init, sha256_update, sha256_final
-
-
+- Binary read/write data from/to files
 - Terminal widgets
 - syslog
 - posix_fallocate, posix_fadvise
@@ -12,7 +9,7 @@
 - Some interesting data structure
 
 
-* Multicast snippet:
+* Multicast C snippet:
 
 // #include "socketaddr.h" /////////////////////////////////////////////
 #include <caml/misc.h>

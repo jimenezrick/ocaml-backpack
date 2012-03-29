@@ -191,6 +191,19 @@ let () =
     assert (Pretty.hex_of_string h = h');
     Gc.full_major ()
 
+let () =
+    let s1 = "123" in
+    let s2 = "456" in
+    let s3 = s1 ^ s2 in
+    let hx = "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92" in
+    let ctx = Digest.sha256_init () in
+    Digest.sha256_update ctx s1;
+    Digest.sha256_update ctx s2;
+    let h = Digest.sha256_final ctx in
+    assert (Digest.sha256 s3 = h);
+    assert (Pretty.hex_of_string h = hx);
+    Gc.full_major ()
+
 (* IntMap *)
 
 let () =

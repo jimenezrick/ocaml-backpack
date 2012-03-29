@@ -9,6 +9,7 @@
 #include <caml/fail.h>
 #include <caml/threads.h>
 #include <caml/unixsupport.h>
+#include <caml/custom.h>
 
 #define BACKPACK_FLAGS_LEN(flags) sizeof(flags) / sizeof(flags[0])
 
