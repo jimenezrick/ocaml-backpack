@@ -1,5 +1,4 @@
 - INI config file parser
-- Binary read/write data from/to files
 - Terminal widgets
 - syslog
 - posix_fallocate, posix_fadvise
