@@ -189,7 +189,12 @@ external sysconf : sysconf -> int64 = "caml_backpack_sysconf"
 
 external ttyname : file_descr -> string = "caml_backpack_ttyname"
 
-external getdomainname : unit -> string = "caml_backpack_getdomainname"
+let getdomainname () =
+    let host = gethostname () in
+    match BackpackString.split ["."] host with
+    | [h]    -> ""
+    | h :: t -> String.concat "." t
+    | _      -> ""
 
 let is_regular path = (stat path).st_kind = S_REG
 
