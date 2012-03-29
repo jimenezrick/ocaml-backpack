@@ -192,3 +192,18 @@ external ttyname : file_descr -> string = "caml_backpack_ttyname"
 let is_regular path = (stat path).st_kind = S_REG
 
 let is_directory path = (stat path).st_kind = S_DIR
+
+let create_pid_file path =
+    try
+        let fd  = openfile path [O_CREAT; O_EXCL; O_WRONLY] 0o644 in
+        let pid = string_of_int (getpid ()) in
+        ignore (write fd pid 0 (String.length pid));
+        close fd;
+        true
+    with Unix_error (EEXIST, _, _) -> false
+
+let is_stale_pid_file path =
+    let chan = open_in path in
+    let pid  = int_of_string (input_line chan) in
+    try kill pid 0; false
+    with Unix_error (ESRCH, _, _) -> true
