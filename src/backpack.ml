@@ -1,7 +1,7 @@
 let finally h f x =
     let r =
-        try f x
-        with e -> h (); raise e
+        try f x with
+        | e -> h (); raise e
     in h (); r
 
 module Int =

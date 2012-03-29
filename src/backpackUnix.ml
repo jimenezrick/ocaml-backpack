@@ -1,8 +1,8 @@
 include Unix
 
 let rec restart_on_EINTR f x =
-    try f x
-    with Unix_error (EINTR, _, _) -> restart_on_EINTR f x
+    try f x with
+    | Unix_error (EINTR, _, _) -> restart_on_EINTR f x
 
 let input_proc_int path =
     let chan = open_in path in
@@ -205,5 +205,5 @@ let create_pid_file path =
 let is_stale_pid_file path =
     let chan = open_in path in
     let pid  = int_of_string (input_line chan) in
-    try kill pid 0; false
-    with Unix_error (ESRCH, _, _) -> true
+    try kill pid 0; false with
+    | Unix_error (ESRCH, _, _) -> true
