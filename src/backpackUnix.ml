@@ -189,6 +189,8 @@ external sysconf : sysconf -> int64 = "caml_backpack_sysconf"
 
 external ttyname : file_descr -> string = "caml_backpack_ttyname"
 
+external getdomainname : unit -> string = "caml_backpack_getdomainname"
+
 let is_regular path = (stat path).st_kind = S_REG
 
 let is_directory path = (stat path).st_kind = S_DIR
