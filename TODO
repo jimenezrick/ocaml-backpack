@@ -1,7 +1,7 @@
 - INI config file parser
 - Terminal widgets
 - syslog
-- posix_fallocate, posix_fadvise
+- posix_fallocate, posix_fadvise and fallocate(2)
 - Multicast group join/leave: mcast_join, mcast_leave
 - Daemon mode, write PID file
 - Event loop
