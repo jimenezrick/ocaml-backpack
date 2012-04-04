@@ -9,11 +9,12 @@ I never leave home without it!
 
 Small OCaml module that extends the standard library with:
 
-- Terminal handling
 - Handy miscellaneous functions and operators
+- Terminal handling
 - Pretty-printing lists, arrays and tuples
 - New data structures:
 	+ Lazy lists
+	+ Finger trees
 - Additional digest algorithms:
 	+ CRC32
 	+ SHA-256
@@ -32,7 +33,7 @@ Small OCaml module that extends the standard library with:
  Requirements
 --------------
 
-- OCaml
+- OCaml >= 3.12
 - Findlib
 - Linux (this library is specific for Linux)
 

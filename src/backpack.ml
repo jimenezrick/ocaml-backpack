@@ -4,6 +4,12 @@ let finally h f x =
         | e -> h (); raise e
     in h (); r
 
+let measure_time f =
+    let t1 = Unix.gettimeofday () in
+    ignore (f ());
+    let t2 = Unix.gettimeofday () in
+    t2 -. t1
+
 module Int =
     struct
         type t = int
@@ -77,14 +83,8 @@ module Char =
 
 module String = BackpackString
 
-module List =
-    struct
-        include List
-
-        let rec remove x = function
-            | []                -> []
-            | h :: t when h = x -> t
-            | h :: t            -> h :: remove x t
-    end
+module List = BackpackList
 
 module LazyList = BackpackLazyList
+
+module FingerTree = BackpackFingerTree
